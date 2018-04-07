@@ -153,6 +153,7 @@
             this.Name = "FormMain";
             this.Text = "Консультативное окно";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FormMain_FormClosed);
+            this.Load += new System.EventHandler(this.FormMain_Load);
             this.MenuMain.ResumeLayout(false);
             this.MenuMain.PerformLayout();
             this.TableLayoutPanel.ResumeLayout(false);

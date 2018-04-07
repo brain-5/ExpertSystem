@@ -8,6 +8,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using KnowledgeBase.Annotations;
 using Newtonsoft.Json;
 
 namespace KnowledgeBase
@@ -15,28 +16,28 @@ namespace KnowledgeBase
     namespace Globals
     {
         public class TableLog
-        {            
+        {
             public TableGraph SystemTableGraph = null;
             public string UserAnswer = null;
         }
 
-        public class TableGraph:ICloneable
+        public class TableGraph : ICloneable
         {
             public int Id = 0;
-            public List<int> ParentIds = null;           
+            public List<int> ParentIds = null;
             public string Question = null;
             public string Consultation = null;
             public string UserAnswer = null;
             public string NameObject = null;
             public string Annotation = null;
-            public bool IsShowConsultation = false;        
+            public bool IsShowConsultation = false;
 
             #region Graphics
 
             public static Size GraphSize = new Size(20, 20);
             public RectangleF Rectangle;
             public Color GraphConstructorColor;
-            public Color LineConstructorColor;            
+            public Color LineConstructorColor;
             public Color TextConstructorColor;
 
             public Color GraphResultColor;
@@ -49,7 +50,7 @@ namespace KnowledgeBase
             #region Layers
 
             [JsonIgnore]
-            public TreeNode LayerTreeNodeOwner=null;
+            public TreeNode LayerTreeNodeOwner = null;
 
             #endregion
 
@@ -64,9 +65,9 @@ namespace KnowledgeBase
 
 
             public TableGraph()
-            {                                
+            {
                 ParentIds = new List<int>();
-                GraphConstructorColor = Color.CornflowerBlue; LineConstructorColor=Color.Black; TextConstructorColor = Color.White;
+                GraphConstructorColor = Color.CornflowerBlue; LineConstructorColor = Color.Black; TextConstructorColor = Color.White;
                 GraphResultColor = Color.DarkSeaGreen; LineResultColor = Color.DarkSeaGreen; TextResultColor = Color.White;
                 CurrentGraphResultColor = Color.LightSeaGreen;
             }
@@ -79,16 +80,20 @@ namespace KnowledgeBase
 
         public class TreeViewSerialize
         {
-            public string Text=null;
-            public bool IsCheked=false;
-            public int GraphId=-1;
-            public List<TreeViewSerialize> NodeList=null;
+            public string Text = null;
+            public bool IsCheked = false;
+            public int GraphId = -1;
+            public List<TreeViewSerialize> NodeList = null;
         }
 
+
+        /// <summary>
+        /// Данные для хранения в файле
+        /// </summary>
         public class SaveLoadDataSerialize
         {
-            public TreeViewSerialize TreeViewSerialize=null;
-            public List<TableGraph> TableGraphsList=null;
+            public TreeViewSerialize TreeViewSerialize = null;
+            public List<TableGraph> TableGraphsList = null;
 
             public SaveLoadDataSerialize()
             {
@@ -98,8 +103,8 @@ namespace KnowledgeBase
 
             public SaveLoadDataSerialize(List<TableGraph> tableGraphsIn)
             {
-                TreeViewSerialize=new TreeViewSerialize();
-                TableGraphsList=new List<TableGraph>(tableGraphsIn);
+                TreeViewSerialize = new TreeViewSerialize();
+                TableGraphsList = new List<TableGraph>(tableGraphsIn);
             }
         }
 
@@ -125,7 +130,7 @@ namespace KnowledgeBase
                         };
 
                         treeViewSerialize.NodeList.Add(tvSerialize);
-                        ToTreeViewSerialize(ref tvSerialize, node.Nodes);                        
+                        ToTreeViewSerialize(ref tvSerialize, node.Nodes);
                     }
                 }
             }
@@ -133,7 +138,7 @@ namespace KnowledgeBase
             public static void FromTreeViewSerialize(TreeViewSerialize treeViewSerializeIn, ref TreeNodeCollection treeNodeCollectionOut, ref List<TableGraph> listTableGraphOut)
             {
                 TreeNodeCollection nodes = treeNodeCollectionOut;
-                if (treeViewSerializeIn?.Text!=null)
+                if (treeViewSerializeIn?.Text != null)
                 {
                     TreeNode node = treeNodeCollectionOut.Add(treeViewSerializeIn.Text);
                     node.Checked = treeViewSerializeIn.IsCheked;
@@ -143,14 +148,14 @@ namespace KnowledgeBase
                     var tableGraph = listTableGraphOut.FirstOrDefault(x => x.Id == treeViewSerializeIn.GraphId);
                     if (tableGraph != null) tableGraph.LayerTreeNodeOwner = node;
                 }
-                
-                if (treeViewSerializeIn?.NodeList!=null)
+
+                if (treeViewSerializeIn?.NodeList != null)
                 {
                     foreach (TreeViewSerialize treeViewSerialize in treeViewSerializeIn.NodeList)
-                    {                       
+                    {
                         FromTreeViewSerialize(treeViewSerialize, ref nodes, ref listTableGraphOut);
                     }
-                }                
+                }
             }
 
             public static string JsonPrettify(string jsonIn)
@@ -171,7 +176,7 @@ namespace KnowledgeBase
 
                 try
                 {
-                    SaveLoadDataSerialize dataSerialize=new SaveLoadDataSerialize(listTableGraph);                    
+                    SaveLoadDataSerialize dataSerialize = new SaveLoadDataSerialize(listTableGraph);
                     ToTreeViewSerialize(ref dataSerialize.TreeViewSerialize, treeView.Nodes);
 
                     string dataString = JsonConvert.SerializeObject(dataSerialize);
@@ -180,6 +185,7 @@ namespace KnowledgeBase
                     using (SaveFileDialog saveFileDialog = new SaveFileDialog())
                     {
                         saveFileDialog.Filter = _fileFilter;
+                        saveFileDialog.InitialDirectory = Environment.CurrentDirectory;
                         if (saveFileDialog.ShowDialog() == DialogResult.OK)
                         {
                             using (StreamWriter streamWriter = new StreamWriter(saveFileDialog.OpenFile()))
@@ -199,29 +205,42 @@ namespace KnowledgeBase
                 return res;
             }
 
-            public static bool LoadDataFromFile(ref TreeViewSerialize treeViewSerializeOut, ref List<TableGraph> listTableGraphOut)
+            public static bool LoadDataFromFile(ref TreeViewSerialize treeViewSerializeOut, ref List<TableGraph> listTableGraphOut, string previosBasePathIn = null)
             {
                 bool res = true;
 
                 try
                 {
-                    using (OpenFileDialog openFileDialog = new OpenFileDialog())
+                    string filePath = previosBasePathIn;
+                    if (String.IsNullOrWhiteSpace(filePath))
                     {
-                        openFileDialog.Filter = _fileFilter;
-                        if (openFileDialog.ShowDialog() == DialogResult.OK)
+                        using (OpenFileDialog openFileDialog = new OpenFileDialog())
                         {
-                            using (StreamReader streamReader = new StreamReader(openFileDialog.OpenFile()))
+                            openFileDialog.Filter = _fileFilter;
+                            openFileDialog.InitialDirectory = Environment.CurrentDirectory;
+                            if (openFileDialog.ShowDialog() == DialogResult.OK)
                             {
-                                string textFromFile = streamReader.ReadToEnd();
-                                SaveLoadDataSerialize dataSerialize= JsonConvert.DeserializeObject<SaveLoadDataSerialize>(textFromFile);
+                                Properties.Settings.Default.PreviousBasePath = openFileDialog.FileName;
+                                Properties.Settings.Default.Save();
 
-                                treeViewSerializeOut = dataSerialize.TreeViewSerialize;
-                                listTableGraphOut = dataSerialize.TableGraphsList;
-
-                                streamReader.Close();
+                                filePath = openFileDialog.FileName;
                             }
                         }
                     }
+
+                    if (!String.IsNullOrWhiteSpace(filePath))
+                    {
+                        using (StreamReader streamReader = new StreamReader(filePath))
+                        {
+                            string textFromFile = streamReader.ReadToEnd();
+                            SaveLoadDataSerialize dataSerialize = JsonConvert.DeserializeObject<SaveLoadDataSerialize>(textFromFile);
+
+                            treeViewSerializeOut = dataSerialize.TreeViewSerialize;
+                            listTableGraphOut = dataSerialize.TableGraphsList;
+
+                            streamReader.Close();
+                        }
+                    }                    
                 }
                 catch (Exception e)
                 {

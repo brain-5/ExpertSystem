@@ -22,6 +22,12 @@ namespace KnowledgeBase
             InitializeComponent();
         }
 
+        private void LoadDatabase(string previosBasePathIn = null)
+        {     
+            Globals.Settings.LoadDataFromFile(ref _treeViewSerialize, ref _listTableGraphs, previosBasePathIn);
+            InitializeDialog();
+        }
+
         #region UserDialog
 
         private void InitializeDialog()
@@ -63,8 +69,7 @@ namespace KnowledgeBase
 
         private void MenuItemPathToBase_Click(object sender, EventArgs e)
         {
-            Globals.Settings.LoadDataFromFile(ref _treeViewSerialize, ref _listTableGraphs);
-            InitializeDialog();
+            LoadDatabase();
         }
 
         private void TextBoxUserText_KeyDown(object sender, KeyEventArgs e)
@@ -87,6 +92,14 @@ namespace KnowledgeBase
 
                 default: break;
             }
+        }
+
+        private void FormMain_Load(object sender, EventArgs e)
+        {
+            if (!String.IsNullOrWhiteSpace(Properties.Settings.Default.PreviousBasePath))
+            {
+                LoadDatabase(Properties.Settings.Default.PreviousBasePath);
+            }            
         }
     }
 }
