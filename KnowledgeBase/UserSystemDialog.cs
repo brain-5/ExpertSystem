@@ -15,32 +15,32 @@ namespace KnowledgeBase
         private readonly RichTextBox _chatRichTextBox = null;
         private readonly TextBox _userTextBox = null;
 
-        public TableGraph CurrentTableGraph=null;
+        public TableGraph CurrentTableGraph = null;
         public List<TableLog> TableLogs = null;
 
         public UserSystemDialog([NotNull] RichTextBox chatRichTextBoxIn, [NotNull] TextBox userTextBoxIn)
         {
             _chatRichTextBox = chatRichTextBoxIn; _userTextBox = userTextBoxIn;
             CurrentTableGraph = null;
-            TableLogs=new List<TableLog>();
+            TableLogs = new List<TableLog>();
             _chatRichTextBox.Clear(); _userTextBox.Clear();
-        }
+        }      
 
-        private void SetSystemTextToChat(TableGraph tableGraphIn)
+        private void PrintSystemTextToChat(string systemAnswerIn, [CanBeNull] string consultationTextIn)
         {
             _chatRichTextBox.SelectionColor = Color.Green;
             _chatRichTextBox.SelectionAlignment = HorizontalAlignment.Left;
-            _chatRichTextBox.AppendText("ExpertSystem: " + tableGraphIn.Question);
+            _chatRichTextBox.AppendText("ExpertSystem: " + systemAnswerIn);
             _chatRichTextBox.AppendText(Environment.NewLine);
 
-            if (tableGraphIn.IsShowConsultation)
+            if (!String.IsNullOrWhiteSpace(consultationTextIn))
             {
-                _chatRichTextBox.AppendText(tableGraphIn.Consultation);
+                _chatRichTextBox.AppendText(consultationTextIn);
                 _chatRichTextBox.AppendText(Environment.NewLine);
             }
         }
 
-        private void SetUserTextToChat(string userAnswerIn)
+        private void PrintUserTextToChat(string userAnswerIn)
         {
             _chatRichTextBox.SelectionColor = Color.Blue;
             _chatRichTextBox.SelectionAlignment = HorizontalAlignment.Right;
@@ -61,7 +61,8 @@ namespace KnowledgeBase
             {
                 if (!String.IsNullOrEmpty(userAnswerIn))
                 {
-                    SetUserTextToChat(userAnswerIn);
+                    PrintUserTextToChat(userAnswerIn);
+                    var userAnswer = userAnswerIn.ToUpper();
 
                     if (CurrentTableGraph != null)
                     {
@@ -69,10 +70,10 @@ namespace KnowledgeBase
                         bool isFindAnswer = false;
                         foreach (TableGraph tableGraph in childsEnumerable)
                         {
-                            string[] masStrings = tableGraph.UserAnswer.Split(';');
+                            string[] masStrings = tableGraph.UserAnswer.ToUpper().Split(';');
                             foreach (string st in masStrings)
                             {
-                                if (userAnswerIn.Contains(st))
+                                if (userAnswer.Contains(st))
                                 {
                                     resTableGraph = tableGraph;
                                     isFindAnswer = true;
@@ -80,6 +81,11 @@ namespace KnowledgeBase
                                 }
                             }
                             if (isFindAnswer) break;
+                        }
+
+                        if (!isFindAnswer)
+                        {
+                            PrintSystemTextToChat("Я вас не понял, повторите ответ.", null);
                         }
                     }
                 }
@@ -94,16 +100,16 @@ namespace KnowledgeBase
             {
                 CurrentTableGraph = resTableGraph;
 
-                SetSystemTextToChat(resTableGraph);
+                PrintSystemTextToChat(resTableGraph.Question, resTableGraph.IsShowConsultation ? resTableGraph.Consultation : null);
 
-                TableLog tableLog= new TableLog()
+                TableLog tableLog = new TableLog()
                 {
                     UserAnswer = userAnswerIn,
                     SystemTableGraph = resTableGraph
                 };
 
                 TableLogs.Add(tableLog);
-            }            
+            }
         }
     }
 }

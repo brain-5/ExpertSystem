@@ -41,7 +41,7 @@ namespace KnowledgeBase
                 Settings.FromTreeViewSerialize(treeViewSerializeIn, ref nodes, ref _graph.ListGraphs);
             }
 
-            
+
 
             if (isFormConstructorIn) InitializeFormConstructor();
             else InitializeFormResult();
@@ -71,7 +71,7 @@ namespace KnowledgeBase
                 {
                     TableGraph tg = _graph.ListGraphs.Find(x => x.Id == tableLog.SystemTableGraph.Id);
                     if (tg != null) tg.IsPathForResult = true;
-                }                
+                }
             }
         }
 
@@ -103,6 +103,14 @@ namespace KnowledgeBase
 
         private void Save_Click(object sender, EventArgs e)
         {
+            foreach (var listGraph in _graph.ListGraphs)
+            {
+                if (listGraph.IsShowConsultation && String.IsNullOrWhiteSpace(listGraph.Consultation))
+                {
+                    MessageBox.Show($"Для объекта {listGraph.Id}-{listGraph.NameObject} заполните текстовое поле «Консультация».");
+                    return;
+                }
+            }
             Settings.SaveDataToFile(TreeViewP3, _graph.ListGraphs);
         }
 
@@ -237,7 +245,7 @@ namespace KnowledgeBase
             }
             else if (e.Button == MouseButtons.Left)
             {
-                if (_graph.SelectedTableGraph != null)
+                if (_graph.SelectedTableGraph != null && _graph.GraphState == GraphStateEnum.Move)
                 {
                     _graph.MoveGraph(_graph.SelectedTableGraph, e.Location);
                     Panel0.Invalidate();
@@ -247,7 +255,14 @@ namespace KnowledgeBase
 
         private void Panel0_MouseDown(object sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Middle)
+            if (e.Button == MouseButtons.Left && _graph.GraphState == GraphStateEnum.None)
+            {
+                if (_graph.SelectGraph(e.Location) != null)
+                {
+                    _graph.GraphState = GraphStateEnum.Move;
+                }
+            }
+            else if (e.Button == MouseButtons.Middle)
             {
                 _mouseRightClickPoint = e.Location;
             }
@@ -255,6 +270,8 @@ namespace KnowledgeBase
             {
                 if (_graph.SelectedTableGraph != null)
                 {
+                    _graph.GraphState = GraphStateEnum.ContextMenu;
+
                     TableGraph selectSecondGraph = _graph.SelectGraph(e.Location);
                     if (selectSecondGraph != null && selectSecondGraph != _graph.SelectedTableGraph)
                     {
@@ -266,7 +283,7 @@ namespace KnowledgeBase
                                 selectSecondGraph.ParentIds.Add(_graph.SelectedTableGraph.Id); Panel0.Invalidate();
                             }
                         });
-                        Panel0.ContextMenu = c;
+                        c.Show(Panel0, e.Location);
                     }
                     else
                     {
@@ -281,6 +298,10 @@ namespace KnowledgeBase
                                 TreeViewP3.Nodes.Remove(selectSecondGraph.LayerTreeNodeOwner);
 
                             _graph.ListGraphs.Remove(_graph.SelectedTableGraph);
+
+                            _graph.SelectedTableGraph = null;
+                            SetDataToControlsP1(_graph.SelectedTableGraph);
+
                             Panel0.Invalidate();
                         });
                         c.MenuItems.Add("Удалить линии с этим графом", (x, a) =>
@@ -291,12 +312,16 @@ namespace KnowledgeBase
 
                             Panel0.Invalidate();
                         });
-                        Panel0.ContextMenu = c;
+                        c.Show(Panel0, e.Location);
                     }
                 }
             }
         }
 
+        private void Panel0_MouseUp(object sender, MouseEventArgs e)
+        {
+            _graph.GraphState = GraphStateEnum.None;
+        }
 
         #endregion
 
@@ -371,10 +396,10 @@ namespace KnowledgeBase
             {
                 tableGraph = new TableGraph()
                 {
-                    Id = maxItem.Id+ 1,
+                    Id = maxItem.Id + 1,
                     Rectangle = new RectangleF(
                         new PointF(maxItem.Rectangle.X + TableGraph.GraphSize.Width * 2,
-                        maxItem.Rectangle.Y+ TableGraph.GraphSize.Height * 2),
+                        maxItem.Rectangle.Y + TableGraph.GraphSize.Height * 2),
                         TableGraph.GraphSize)
                 };
             }
@@ -384,7 +409,7 @@ namespace KnowledgeBase
                 {
                     Rectangle = new Rectangle(Point.Empty, TableGraph.GraphSize)
                 };
-            }        
+            }
 
             tableGraph.LayerTreeNodeOwner = AddObjectToLayer(tableGraph.Id.ToString());
             tableGraph.LayerTreeNodeOwner.Tag = tableGraph.Id;
@@ -456,14 +481,6 @@ namespace KnowledgeBase
         {
             Panel0.Invalidate();
         }
-
-
-
-
-
-
-
-
 
         #endregion
 

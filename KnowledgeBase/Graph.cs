@@ -22,6 +22,7 @@ namespace KnowledgeBase
 
         public TableGraph SelectedTableGraph = null;
         public List<TableGraph> ListGraphs = null;
+        public GraphStateEnum GraphState = GraphStateEnum.None;
 
         public Graph()
         {
@@ -38,7 +39,7 @@ namespace KnowledgeBase
             graphics.ScaleTransform(_scale, _scale);
             graphics.TranslateTransform(_translatePoint.X, _translatePoint.Y);
 
-            _matrixTransform = graphics.Transform;            
+            _matrixTransform = graphics.Transform;
 
             foreach (var graph in ListGraphs)
             {
@@ -51,22 +52,22 @@ namespace KnowledgeBase
                     Alignment = StringAlignment.Center,
                     LineAlignment = StringAlignment.Center
                 };
-                
+
                 Brush graphBrush = null;
 
-                if (graph.IsCurrentGraphForResult)                
-                    graphBrush =new SolidBrush(graph.CurrentGraphResultColor);                
-                else if (graph.IsPathForResult)                                   
-                    graphBrush =new SolidBrush(graph.GraphResultColor);                
-                else                
-                    graphBrush =new SolidBrush(graph.GraphConstructorColor);                               
+                if (graph.IsCurrentGraphForResult)
+                    graphBrush = new SolidBrush(graph.CurrentGraphResultColor);
+                else if (graph.IsPathForResult)
+                    graphBrush = new SolidBrush(graph.GraphResultColor);
+                else
+                    graphBrush = new SolidBrush(graph.GraphConstructorColor);
 
                 graphics.FillEllipse(graphBrush, graph.Rectangle);
                 graphics.DrawString(graph.Id.ToString(), graphFont, textBrush, graph.Rectangle, textFormat);
 
                 DrawConnectionLine(graph, graphics);
 
-                
+
                 graphBrush.Dispose(); graphBrush = null;
                 textBrush.Dispose(); textBrush = null;
                 graphFont.Dispose(); graphFont = null;
@@ -82,12 +83,12 @@ namespace KnowledgeBase
                 if (firstGraph != null && IsShowGraph(firstGraph))
                 {
                     Pen linePen = null;
-                    if ((tableGraphIn.IsCurrentGraphForResult || tableGraphIn.IsPathForResult) && !firstGraph.IsPathForResult)                    
-                        linePen = new Pen(tableGraphIn.LineConstructorColor);                                            
+                    if ((tableGraphIn.IsCurrentGraphForResult || tableGraphIn.IsPathForResult) && !firstGraph.IsPathForResult)
+                        linePen = new Pen(tableGraphIn.LineConstructorColor);
                     else if ((tableGraphIn.IsCurrentGraphForResult || tableGraphIn.IsPathForResult) && firstGraph.IsPathForResult)
-                        linePen = new Pen(tableGraphIn.LineResultColor);                    
-                    else                    
-                        linePen = new Pen(tableGraphIn.LineConstructorColor);                           
+                        linePen = new Pen(tableGraphIn.LineResultColor);
+                    else
+                        linePen = new Pen(tableGraphIn.LineConstructorColor);
 
                     PointF firstLinePoint = new PointF(firstGraph.Rectangle.Left + firstGraph.Rectangle.Width / 2.0f,
                          firstGraph.Rectangle.Top + firstGraph.Rectangle.Height / 2.0f);
@@ -161,7 +162,7 @@ namespace KnowledgeBase
             return vecRes;
         }
 
-        private PointF GetTransformPointFromMatrix(Matrix matrixIn,PointF pointFIn)
+        private PointF GetTransformPointFromMatrix(Matrix matrixIn, PointF pointFIn)
         {
             //Обратные действия преобразования масштабирования и перемещения для точки
             PointF translate = new PointF(pointFIn.X - matrixIn.Elements[4], pointFIn.Y - matrixIn.Elements[5]);
@@ -170,15 +171,20 @@ namespace KnowledgeBase
             return translateScale;
         }
 
+        /// <summary>
+        /// Находит граф, который попадает в область mousePointIn и возвращает его.
+        /// </summary>
+        /// <param name="mousePointIn"></param>
+        /// <returns></returns>
         public TableGraph SelectGraph(PointF mousePointIn)
         {
             TableGraph tableGraph = null;
             foreach (var graph in ListGraphs)
             {
                 if (!IsShowGraph(graph)) continue;
-                
+
                 //Обратные действия преобразования масштабирования и перемещения для точки
-                PointF translateScaleMousePoint = GetTransformPointFromMatrix(_matrixTransform,mousePointIn);
+                PointF translateScaleMousePoint = GetTransformPointFromMatrix(_matrixTransform, mousePointIn);
 
                 if (graph.Rectangle.Contains(translateScaleMousePoint))
                 {

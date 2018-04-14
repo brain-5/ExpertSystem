@@ -309,6 +309,7 @@
             this.Panel0.MouseClick += new System.Windows.Forms.MouseEventHandler(this.Panel0_MouseClick);
             this.Panel0.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Panel0_MouseDown);
             this.Panel0.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Panel0_MouseMove);
+            this.Panel0.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Panel0_MouseUp);
             // 
             // ButtonScaleMinus
             // 

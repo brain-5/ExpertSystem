@@ -96,6 +96,7 @@ namespace KnowledgeBase
 
         private void FormMain_Load(object sender, EventArgs e)
         {
+            //Автозагрузка последней открытой базы
             if (!String.IsNullOrWhiteSpace(Properties.Settings.Default.PreviousBasePath))
             {
                 LoadDatabase(Properties.Settings.Default.PreviousBasePath);
