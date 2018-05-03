@@ -1,0 +1,233 @@
+{
+  "TreeViewSerialize": {
+    "Text": null,
+    "IsCheked": false,
+    "GraphId": -1,
+    "NodeList": [
+      {
+        "Text": "Node0",
+        "IsCheked": true,
+        "GraphId": -1,
+        "NodeList": [
+          {
+            "Text": "Главный слой",
+            "IsCheked": true,
+            "GraphId": -1,
+            "NodeList": [
+              {
+                "Text": "0",
+                "IsCheked": true,
+                "GraphId": 0,
+                "NodeList": null
+              },
+              {
+                "Text": "1",
+                "IsCheked": true,
+                "GraphId": 1,
+                "NodeList": null
+              },
+              {
+                "Text": "2",
+                "IsCheked": true,
+                "GraphId": 2,
+                "NodeList": null
+              },
+              {
+                "Text": "3",
+                "IsCheked": true,
+                "GraphId": 3,
+                "NodeList": null
+              },
+              {
+                "Text": "4",
+                "IsCheked": true,
+                "GraphId": 4,
+                "NodeList": null
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "TableGraphsList": [
+    {
+      "Id": 0,
+      "ParentIds": [],
+      "Question": "Как ваши дела?",
+      "Consultation": null,
+      "UserAnswer": null,
+      "NameObject": null,
+      "Annotation": null,
+      "IsShowConsultation": false,
+      "Rectangle": {
+        "Location": {
+          "IsEmpty": false,
+          "X": 267.0,
+          "Y": 127.0
+        },
+        "Size": "20, 20",
+        "X": 267.0,
+        "Y": 127.0,
+        "Width": 20.0,
+        "Height": 20.0,
+        "Left": 267.0,
+        "Top": 127.0,
+        "Right": 287.0,
+        "Bottom": 147.0,
+        "IsEmpty": false
+      },
+      "GraphConstructorColor": "CornflowerBlue",
+      "LineConstructorColor": "Black",
+      "TextConstructorColor": "White",
+      "GraphResultColor": "DarkSeaGreen",
+      "LineResultColor": "DarkSeaGreen",
+      "TextResultColor": "White",
+      "CurrentGraphResultColor": "LightSeaGreen"
+    },
+    {
+      "Id": 1,
+      "ParentIds": [
+        0
+      ],
+      "Question": "",
+      "Consultation": null,
+      "UserAnswer": "Хорошо",
+      "NameObject": null,
+      "Annotation": null,
+      "IsShowConsultation": false,
+      "Rectangle": {
+        "Location": {
+          "IsEmpty": false,
+          "X": 108.0,
+          "Y": 255.0
+        },
+        "Size": "20, 20",
+        "X": 108.0,
+        "Y": 255.0,
+        "Width": 20.0,
+        "Height": 20.0,
+        "Left": 108.0,
+        "Top": 255.0,
+        "Right": 128.0,
+        "Bottom": 275.0,
+        "IsEmpty": false
+      },
+      "GraphConstructorColor": "CornflowerBlue",
+      "LineConstructorColor": "Black",
+      "TextConstructorColor": "White",
+      "GraphResultColor": "DarkSeaGreen",
+      "LineResultColor": "DarkSeaGreen",
+      "TextResultColor": "White",
+      "CurrentGraphResultColor": "LightSeaGreen"
+    },
+    {
+      "Id": 2,
+      "ParentIds": [
+        0
+      ],
+      "Question": "Вы с этим согласны?",
+      "Consultation": null,
+      "UserAnswer": "Плохо",
+      "NameObject": null,
+      "Annotation": null,
+      "IsShowConsultation": false,
+      "Rectangle": {
+        "Location": {
+          "IsEmpty": false,
+          "X": 264.0,
+          "Y": 274.0
+        },
+        "Size": "20, 20",
+        "X": 264.0,
+        "Y": 274.0,
+        "Width": 20.0,
+        "Height": 20.0,
+        "Left": 264.0,
+        "Top": 274.0,
+        "Right": 284.0,
+        "Bottom": 294.0,
+        "IsEmpty": false
+      },
+      "GraphConstructorColor": "CornflowerBlue",
+      "LineConstructorColor": "Black",
+      "TextConstructorColor": "White",
+      "GraphResultColor": "DarkSeaGreen",
+      "LineResultColor": "DarkSeaGreen",
+      "TextResultColor": "White",
+      "CurrentGraphResultColor": "LightSeaGreen"
+    },
+    {
+      "Id": 3,
+      "ParentIds": [
+        0
+      ],
+      "Question": "",
+      "Consultation": null,
+      "UserAnswer": "Не знаю",
+      "NameObject": null,
+      "Annotation": null,
+      "IsShowConsultation": false,
+      "Rectangle": {
+        "Location": {
+          "IsEmpty": false,
+          "X": 464.0,
+          "Y": 265.0
+        },
+        "Size": "20, 20",
+        "X": 464.0,
+        "Y": 265.0,
+        "Width": 20.0,
+        "Height": 20.0,
+        "Left": 464.0,
+        "Top": 265.0,
+        "Right": 484.0,
+        "Bottom": 285.0,
+        "IsEmpty": false
+      },
+      "GraphConstructorColor": "CornflowerBlue",
+      "LineConstructorColor": "Black",
+      "TextConstructorColor": "White",
+      "GraphResultColor": "DarkSeaGreen",
+      "LineResultColor": "DarkSeaGreen",
+      "TextResultColor": "White",
+      "CurrentGraphResultColor": "LightSeaGreen"
+    },
+    {
+      "Id": 4,
+      "ParentIds": [
+        2
+      ],
+      "Question": "",
+      "Consultation": "Должна быть не пустой?",
+      "UserAnswer": "Да",
+      "NameObject": null,
+      "Annotation": null,
+      "IsShowConsultation": true,
+      "Rectangle": {
+        "Location": {
+          "IsEmpty": false,
+          "X": 264.0,
+          "Y": 393.0
+        },
+        "Size": "20, 20",
+        "X": 264.0,
+        "Y": 393.0,
+        "Width": 20.0,
+        "Height": 20.0,
+        "Left": 264.0,
+        "Top": 393.0,
+        "Right": 284.0,
+        "Bottom": 413.0,
+        "IsEmpty": false
+      },
+      "GraphConstructorColor": "CornflowerBlue",
+      "LineConstructorColor": "Black",
+      "TextConstructorColor": "White",
+      "GraphResultColor": "DarkSeaGreen",
+      "LineResultColor": "DarkSeaGreen",
+      "TextResultColor": "White",
+      "CurrentGraphResultColor": "LightSeaGreen"
+    }
+  ]
+}
