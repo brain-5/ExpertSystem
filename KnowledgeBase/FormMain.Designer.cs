@@ -35,11 +35,14 @@
             this.MenuItemBuildKnowledgeBase = new System.Windows.Forms.ToolStripMenuItem();
             this.MenuItemLookResult = new System.Windows.Forms.ToolStripMenuItem();
             this.MenuItemExit = new System.Windows.Forms.ToolStripMenuItem();
-            this.TableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
+            this.TableLayoutPanelMain = new System.Windows.Forms.TableLayoutPanel();
             this.TextBoxUserText = new System.Windows.Forms.TextBox();
             this.RichTextBoxChat = new System.Windows.Forms.RichTextBox();
+            this.TableLayoutPanelBottom = new System.Windows.Forms.TableLayoutPanel();
+            this.ButtonShowAnswers = new System.Windows.Forms.Button();
             this.MenuMain.SuspendLayout();
-            this.TableLayoutPanel.SuspendLayout();
+            this.TableLayoutPanelMain.SuspendLayout();
+            this.TableLayoutPanelBottom.SuspendLayout();
             this.SuspendLayout();
             // 
             // MenuMain
@@ -98,36 +101,36 @@
             this.MenuItemExit.Text = "Выход";
             this.MenuItemExit.Click += new System.EventHandler(this.MenuItemExit_Click);
             // 
-            // TableLayoutPanel
+            // TableLayoutPanelMain
             // 
-            this.TableLayoutPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.TableLayoutPanelMain.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.TableLayoutPanel.AutoSize = true;
-            this.TableLayoutPanel.BackColor = System.Drawing.SystemColors.ActiveCaption;
-            this.TableLayoutPanel.ColumnCount = 1;
-            this.TableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.TableLayoutPanel.Controls.Add(this.TextBoxUserText, 0, 1);
-            this.TableLayoutPanel.Controls.Add(this.RichTextBoxChat, 0, 0);
-            this.TableLayoutPanel.Location = new System.Drawing.Point(9, 53);
-            this.TableLayoutPanel.Margin = new System.Windows.Forms.Padding(0);
-            this.TableLayoutPanel.Name = "TableLayoutPanel";
-            this.TableLayoutPanel.Padding = new System.Windows.Forms.Padding(5);
-            this.TableLayoutPanel.RowCount = 2;
-            this.TableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 80F));
-            this.TableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
-            this.TableLayoutPanel.Size = new System.Drawing.Size(504, 379);
-            this.TableLayoutPanel.TabIndex = 3;
+            this.TableLayoutPanelMain.AutoSize = true;
+            this.TableLayoutPanelMain.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.TableLayoutPanelMain.ColumnCount = 1;
+            this.TableLayoutPanelMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.TableLayoutPanelMain.Controls.Add(this.TableLayoutPanelBottom, 0, 1);
+            this.TableLayoutPanelMain.Controls.Add(this.RichTextBoxChat, 0, 0);
+            this.TableLayoutPanelMain.Location = new System.Drawing.Point(9, 53);
+            this.TableLayoutPanelMain.Margin = new System.Windows.Forms.Padding(0);
+            this.TableLayoutPanelMain.Name = "TableLayoutPanelMain";
+            this.TableLayoutPanelMain.Padding = new System.Windows.Forms.Padding(5);
+            this.TableLayoutPanelMain.RowCount = 2;
+            this.TableLayoutPanelMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 80F));
+            this.TableLayoutPanelMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
+            this.TableLayoutPanelMain.Size = new System.Drawing.Size(507, 370);
+            this.TableLayoutPanelMain.TabIndex = 3;
             // 
             // TextBoxUserText
             // 
             this.TextBoxUserText.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.TextBoxUserText.Location = new System.Drawing.Point(8, 303);
+            this.TextBoxUserText.Location = new System.Drawing.Point(3, 3);
             this.TextBoxUserText.Multiline = true;
             this.TextBoxUserText.Name = "TextBoxUserText";
-            this.TextBoxUserText.Size = new System.Drawing.Size(488, 68);
+            this.TextBoxUserText.Size = new System.Drawing.Size(441, 66);
             this.TextBoxUserText.TabIndex = 2;
             this.TextBoxUserText.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TextBoxUserText_KeyDown);
             // 
@@ -138,16 +141,47 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.RichTextBoxChat.Location = new System.Drawing.Point(8, 8);
             this.RichTextBoxChat.Name = "RichTextBoxChat";
-            this.RichTextBoxChat.Size = new System.Drawing.Size(488, 289);
+            this.RichTextBoxChat.Size = new System.Drawing.Size(491, 282);
             this.RichTextBoxChat.TabIndex = 3;
             this.RichTextBoxChat.Text = "";
+            // 
+            // TableLayoutPanelBottom
+            // 
+            this.TableLayoutPanelBottom.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.TableLayoutPanelBottom.ColumnCount = 2;
+            this.TableLayoutPanelBottom.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 90F));
+            this.TableLayoutPanelBottom.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 10F));
+            this.TableLayoutPanelBottom.Controls.Add(this.TextBoxUserText, 0, 0);
+            this.TableLayoutPanelBottom.Controls.Add(this.ButtonShowAnswers, 1, 0);
+            this.TableLayoutPanelBottom.Location = new System.Drawing.Point(5, 293);
+            this.TableLayoutPanelBottom.Margin = new System.Windows.Forms.Padding(0);
+            this.TableLayoutPanelBottom.Name = "TableLayoutPanelBottom";
+            this.TableLayoutPanelBottom.RowCount = 1;
+            this.TableLayoutPanelBottom.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.TableLayoutPanelBottom.Size = new System.Drawing.Size(497, 72);
+            this.TableLayoutPanelBottom.TabIndex = 4;
+            // 
+            // ButtonShowAnswers
+            // 
+            this.ButtonShowAnswers.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.ButtonShowAnswers.Location = new System.Drawing.Point(450, 3);
+            this.ButtonShowAnswers.Name = "ButtonShowAnswers";
+            this.ButtonShowAnswers.Size = new System.Drawing.Size(44, 66);
+            this.ButtonShowAnswers.TabIndex = 3;
+            this.ButtonShowAnswers.Text = "?";
+            this.ButtonShowAnswers.UseVisualStyleBackColor = true;
+            this.ButtonShowAnswers.Click += new System.EventHandler(this.ButtonShowAnswers_Click);
             // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(525, 432);
-            this.Controls.Add(this.TableLayoutPanel);
+            this.Controls.Add(this.TableLayoutPanelMain);
             this.Controls.Add(this.MenuMain);
             this.MainMenuStrip = this.MenuMain;
             this.Name = "FormMain";
@@ -156,8 +190,9 @@
             this.Load += new System.EventHandler(this.FormMain_Load);
             this.MenuMain.ResumeLayout(false);
             this.MenuMain.PerformLayout();
-            this.TableLayoutPanel.ResumeLayout(false);
-            this.TableLayoutPanel.PerformLayout();
+            this.TableLayoutPanelMain.ResumeLayout(false);
+            this.TableLayoutPanelBottom.ResumeLayout(false);
+            this.TableLayoutPanelBottom.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -172,9 +207,11 @@
         private System.Windows.Forms.ToolStripMenuItem MenuItemBuildKnowledgeBase;
         private System.Windows.Forms.ToolStripMenuItem MenuItemLookResult;
         private System.Windows.Forms.ToolStripMenuItem MenuItemExit;
-        private System.Windows.Forms.TableLayoutPanel TableLayoutPanel;
+        private System.Windows.Forms.TableLayoutPanel TableLayoutPanelMain;
         private System.Windows.Forms.TextBox TextBoxUserText;
         private System.Windows.Forms.RichTextBox RichTextBoxChat;
+        private System.Windows.Forms.TableLayoutPanel TableLayoutPanelBottom;
+        private System.Windows.Forms.Button ButtonShowAnswers;
     }
 }
 

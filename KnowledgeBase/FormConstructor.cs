@@ -15,9 +15,9 @@ namespace KnowledgeBase
 {
     public partial class FormConstructor : Form
     {
-        private Graph _graph = null;
+        private readonly Graph _graph = null;
         private Point _mouseRightClickPoint;
-        private bool _isFormConstructor = false;
+        private readonly bool _isFormConstructor = false;
         private readonly UserSystemDialog _userSystemDialog = null;
 
         public FormConstructor(TreeViewSerialize treeViewSerializeIn, List<TableGraph> listTableGraphIn, UserSystemDialog userSystemDialogIn, bool isFormConstructorIn)
@@ -55,6 +55,7 @@ namespace KnowledgeBase
             TableLayoutPanelMain.RowStyles[0].Height = 0.0f;
             ButtonAddLayerP3.Visible = false;
             ButtonRemoveLayerP3.Visible = false;
+            ButtonShowAnswer.Enabled = false;
 
             //Раскрашивание пройденного пути ответов пользователя и системы
             if (_userSystemDialog != null)
@@ -79,8 +80,7 @@ namespace KnowledgeBase
         {
             TextBoxIdP1.TextChanged += GraphEditEventHandler;
             TextBoxNameObjectP1.TextChanged += GraphEditEventHandler;
-            TextBoxQuestionP1.TextChanged += GraphEditEventHandler;
-            TextBoxAnswerP1.TextChanged += GraphEditEventHandler;
+            TextBoxQuestionP1.TextChanged += GraphEditEventHandler;            
             TextBoxConsultationP1.TextChanged += GraphEditEventHandler;
             CheckBoxConsultationP1.CheckedChanged += GraphEditEventHandler;
             TextBoxAnnotationP1.TextChanged += GraphEditEventHandler;
@@ -338,14 +338,10 @@ namespace KnowledgeBase
                 else if (sender == TextBoxQuestionP1)
                 {
                     _graph.SelectedTableGraph.Question = (sender as TextBox)?.Text;
-                }
-                else if (sender == TextBoxAnswerP1)
-                {
-                    _graph.SelectedTableGraph.UserAnswer = (sender as TextBox)?.Text;
-                }
+                }                
                 else if (sender == CheckBoxConsultationP1)
                 {
-                    _graph.SelectedTableGraph.IsShowConsultation = (sender as CheckBox).Checked;
+                    _graph.SelectedTableGraph.IsShowConsultation = ((CheckBox)sender).Checked;
                 }
                 else if (sender == TextBoxConsultationP1)
                 {
@@ -364,8 +360,7 @@ namespace KnowledgeBase
             {
                 TextBoxIdP1.Text = tableGraph.Id.ToString();
                 TextBoxNameObjectP1.Text = tableGraph.NameObject;
-                TextBoxQuestionP1.Text = tableGraph.Question;
-                TextBoxAnswerP1.Text = tableGraph.UserAnswer;
+                TextBoxQuestionP1.Text = tableGraph.Question;                
                 TextBoxConsultationP1.Text = tableGraph.Consultation;
                 CheckBoxConsultationP1.Checked = tableGraph.IsShowConsultation;
                 TextBoxAnnotationP1.Text = tableGraph.Annotation;
@@ -374,14 +369,23 @@ namespace KnowledgeBase
             {
                 TextBoxIdP1.Text = "";
                 TextBoxNameObjectP1.Text = "";
-                TextBoxQuestionP1.Text = "";
-                TextBoxAnswerP1.Text = "";
+                TextBoxQuestionP1.Text = "";                
                 TextBoxConsultationP1.Text = "";
                 CheckBoxConsultationP1.Checked = false;
                 TextBoxAnnotationP1.Text = "";
             }
         }
 
+        private void ButtonShowAnswer_Click(object sender, EventArgs e)
+        {
+            if (_graph.SelectedTableGraph != null)
+            {
+                if (_graph.SelectedTableGraph.UserAnswers == null) _graph.SelectedTableGraph.UserAnswers = new List<string>();
+
+                Globals.Forms.CreateFormEditAnswer(_graph.SelectedTableGraph.UserAnswers);                
+            }
+            else MessageBox.Show("Сначала надо выбрать граф.");
+        }
 
         #endregion
 
@@ -482,8 +486,8 @@ namespace KnowledgeBase
             Panel0.Invalidate();
         }
 
-        #endregion
 
+        #endregion
 
     }
 }

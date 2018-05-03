@@ -27,7 +27,7 @@ namespace KnowledgeBase
             public List<int> ParentIds = null;
             public string Question = null;
             public string Consultation = null;
-            public string UserAnswer = null;
+            public List<string> UserAnswers = null;
             public string NameObject = null;
             public string Annotation = null;
             public bool IsShowConsultation = false;
@@ -240,7 +240,7 @@ namespace KnowledgeBase
 
                             streamReader.Close();
                         }
-                    }                    
+                    }
                 }
                 catch (Exception e)
                 {
@@ -255,18 +255,19 @@ namespace KnowledgeBase
         public class Forms
         {
             public static FormMain FormMain { get; private set; } = null;
-
             public static FormConstructor FormConstructor { get; private set; } = null;
-
             public static FormConstructor FormResult { get; private set; } = null;
+            public static FormEditAnswer FormEditAnswer { get; private set; } = null;
+            public static FormFindAnswer FormFindAnswer { get; private set; } = null;
 
             public static void CreateFormMain()
             {
                 if (FormMain == null)
                 {
                     FormMain = new FormMain();
+                    FormMain.Show();
                 }
-            }
+            }            
 
             public static void DestroyFormMain()
             {
@@ -279,6 +280,7 @@ namespace KnowledgeBase
                 if (FormConstructor == null)
                 {
                     FormConstructor = new FormConstructor(treeViewSerializeIn, listTableGraphIn, userSystemDialogIn, isFormConstructor);
+                    FormConstructor.Show();
                 }
             }
 
@@ -293,6 +295,7 @@ namespace KnowledgeBase
                 if (FormResult == null)
                 {
                     FormResult = new FormConstructor(treeViewSerializeIn, listTableGraphIn, userSystemDialogIn, isFormConstructor);
+                    FormResult.Show();
                 }
             }
 
@@ -300,6 +303,36 @@ namespace KnowledgeBase
             {
                 FormResult?.Dispose();
                 FormResult = null;
+            }
+
+            public static void CreateFormEditAnswer([NotNull] List<string> userAnswersInOut)
+            {
+                if (FormEditAnswer == null)
+                {
+                    FormEditAnswer = new FormEditAnswer(userAnswersInOut);
+                    FormEditAnswer.Show();
+                }
+            }
+
+            public static void DestroyFormEditAnswer()
+            {
+                FormEditAnswer?.Dispose();
+                FormEditAnswer = null;
+            }
+
+            public static void CreateFormFindAnswer(List<Globals.TableGraph> tableGraphsIn, UserSystemDialog userSystemDialogInOut)
+            {
+                if (FormFindAnswer == null)
+                {
+                    FormFindAnswer = new FormFindAnswer(tableGraphsIn, userSystemDialogInOut);
+                    FormFindAnswer.Show();
+                }
+            }
+
+            public static void DestroyFormFindAnswer()
+            {
+                FormFindAnswer?.Dispose();
+                FormFindAnswer = null;
             }
         }
     }
