@@ -23,15 +23,24 @@ namespace KnowledgeBase
         }
 
         private void LoadDatabase(string previosBasePathIn = null)
-        {     
+        {
             Globals.Settings.LoadDataFromFile(ref _treeViewSerialize, ref _listTableGraphs, previosBasePathIn);
             InitializeDialog();
+        }
+
+        private void ShowFormFindAnswer()
+        {
+            List<Globals.TableGraph> list = null;
+            if (_userSystemDialog.CurrentTableGraph != null)
+                list = _listTableGraphs.Where(x => x.ParentIds.Contains(_userSystemDialog.CurrentTableGraph.Id)).ToList();
+
+            Globals.Forms.CreateFormFindAnswer(list, _userSystemDialog);            
         }
 
         #region UserDialog
 
         private void InitializeDialog()
-        {            
+        {
             _userSystemDialog = new UserSystemDialog(RichTextBoxChat, TextBoxUserText);
             ShowNextQuestion(null);
         }
@@ -43,6 +52,8 @@ namespace KnowledgeBase
 
         #endregion
 
+        #region Menu
+
 
 
         private void MenuItemExit_Click(object sender, EventArgs e)
@@ -51,26 +62,21 @@ namespace KnowledgeBase
         }
 
         private void MenuItemBuildKnowledgeBase_Click(object sender, EventArgs e)
-        {            
-            Globals.Forms.CreateFormConstructor( _treeViewSerialize, _listTableGraphs,_userSystemDialog, true);
-            Globals.Forms.FormConstructor.Show(Globals.Forms.FormMain);
+        {
+            Globals.Forms.CreateFormConstructor(_treeViewSerialize, _listTableGraphs, _userSystemDialog, true);            
         }
 
         private void MenuItemLookResult_Click(object sender, EventArgs e)
         {
-            Globals.Forms.CreateFormRusult(_treeViewSerialize, _listTableGraphs,_userSystemDialog, false);
-            Globals.Forms.FormResult.Show(Globals.Forms.FormMain);
-        }
-
-        private void FormMain_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            Globals.Forms.DestroyFormMain();
+            Globals.Forms.CreateFormRusult(_treeViewSerialize, _listTableGraphs, _userSystemDialog, false);            
         }
 
         private void MenuItemPathToBase_Click(object sender, EventArgs e)
         {
             LoadDatabase();
         }
+
+        #endregion
 
         private void TextBoxUserText_KeyDown(object sender, KeyEventArgs e)
         {
@@ -81,6 +87,7 @@ namespace KnowledgeBase
                         e.SuppressKeyPress = true;
                         ShowNextQuestion(TextBoxUserText.Text);
                         _userSystemDialog?.ClearUserTextBox();
+                        if (_userSystemDialog?.UserMistakeCount >= 3) ShowFormFindAnswer();
                     }
                     break;
 
@@ -100,7 +107,17 @@ namespace KnowledgeBase
             if (!String.IsNullOrWhiteSpace(Properties.Settings.Default.PreviousBasePath))
             {
                 LoadDatabase(Properties.Settings.Default.PreviousBasePath);
-            }            
+            }
+        }
+
+        private void FormMain_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Globals.Forms.DestroyFormMain();
+        }
+
+        private void ButtonShowAnswers_Click(object sender, EventArgs e)
+        {
+            ShowFormFindAnswer();
         }
     }
 }

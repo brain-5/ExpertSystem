@@ -18,13 +18,18 @@ namespace KnowledgeBase
         public TableGraph CurrentTableGraph = null;
         public List<TableLog> TableLogs = null;
 
+        /// <summary>
+        /// Если пользователь ошибается при вводе ответа на вопрос, то увеличиваем. Если правильно - сбрасываем на 0.
+        /// </summary>
+        public int UserMistakeCount = 0;
+
         public UserSystemDialog([NotNull] RichTextBox chatRichTextBoxIn, [NotNull] TextBox userTextBoxIn)
         {
             _chatRichTextBox = chatRichTextBoxIn; _userTextBox = userTextBoxIn;
             CurrentTableGraph = null;
             TableLogs = new List<TableLog>();
             _chatRichTextBox.Clear(); _userTextBox.Clear();
-        }      
+        }
 
         private void PrintSystemTextToChat(string systemAnswerIn, [CanBeNull] string consultationTextIn)
         {
@@ -59,9 +64,8 @@ namespace KnowledgeBase
 
             if (tableGraphsIn != null && tableGraphsIn.Count > 0)
             {
-                if (!String.IsNullOrEmpty(userAnswerIn))
-                {
-                    PrintUserTextToChat(userAnswerIn);
+                if (!string.IsNullOrEmpty(userAnswerIn))
+                {                    
                     var userAnswer = userAnswerIn.ToUpper();
 
                     if (CurrentTableGraph != null)
@@ -70,7 +74,7 @@ namespace KnowledgeBase
                         bool isFindAnswer = false;
                         foreach (TableGraph tableGraph in childsEnumerable)
                         {
-                            string[] masStrings = tableGraph.UserAnswer.ToUpper().Split(';');
+                            string[] masStrings = tableGraph.UserAnswers.ToArray();
                             foreach (string st in masStrings)
                             {
                                 if (userAnswer.Contains(st))
@@ -85,6 +89,7 @@ namespace KnowledgeBase
 
                         if (!isFindAnswer)
                         {
+                            UserMistakeCount++;
                             PrintSystemTextToChat("Я вас не понял, повторите ответ.", null);
                         }
                     }
@@ -98,18 +103,26 @@ namespace KnowledgeBase
 
             if (resTableGraph != null)
             {
-                CurrentTableGraph = resTableGraph;
-
-                PrintSystemTextToChat(resTableGraph.Question, resTableGraph.IsShowConsultation ? resTableGraph.Consultation : null);
-
-                TableLog tableLog = new TableLog()
-                {
-                    UserAnswer = userAnswerIn,
-                    SystemTableGraph = resTableGraph
-                };
-
-                TableLogs.Add(tableLog);
+                MoveToTableGraph(userAnswerIn, resTableGraph);
             }
+        }
+
+        public void MoveToTableGraph([CanBeNull] string userAnswerIn,[NotNull] TableGraph tableGraphIn)
+        {
+            CurrentTableGraph = tableGraphIn;
+
+            UserMistakeCount = 0;
+
+            if(!string.IsNullOrEmpty(userAnswerIn)) PrintUserTextToChat(userAnswerIn);
+            PrintSystemTextToChat(tableGraphIn.Question, tableGraphIn.IsShowConsultation ? tableGraphIn.Consultation : null);
+
+            TableLog tableLog = new TableLog()
+            {
+                UserAnswer = userAnswerIn,
+                SystemTableGraph = tableGraphIn
+            };
+
+            TableLogs.Add(tableLog);
         }
     }
 }

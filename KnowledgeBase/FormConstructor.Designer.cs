@@ -44,7 +44,6 @@
             this.TextBoxIdP1 = new System.Windows.Forms.TextBox();
             this.LabelNameObjectP1 = new System.Windows.Forms.Label();
             this.LabelIdP1 = new System.Windows.Forms.Label();
-            this.TextBoxAnswerP1 = new System.Windows.Forms.TextBox();
             this.LabelAnswerP1 = new System.Windows.Forms.Label();
             this.LabelQuestionP1 = new System.Windows.Forms.Label();
             this.TextBoxQuestionP1 = new System.Windows.Forms.TextBox();
@@ -61,6 +60,7 @@
             this.Layers = new System.Windows.Forms.ToolStripMenuItem();
             this.Objects = new System.Windows.Forms.ToolStripMenuItem();
             this.Properties = new System.Windows.Forms.ToolStripMenuItem();
+            this.ButtonShowAnswer = new System.Windows.Forms.Button();
             this.TableLayoutPanelBottom.SuspendLayout();
             this.Panel3.SuspendLayout();
             this.Panel1.SuspendLayout();
@@ -154,6 +154,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.Panel1.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
+            this.Panel1.Controls.Add(this.ButtonShowAnswer);
             this.Panel1.Controls.Add(this.TextBoxAnnotationP1);
             this.Panel1.Controls.Add(this.LabelAnnotationP1);
             this.Panel1.Controls.Add(this.CheckBoxConsultationP1);
@@ -163,7 +164,6 @@
             this.Panel1.Controls.Add(this.TextBoxIdP1);
             this.Panel1.Controls.Add(this.LabelNameObjectP1);
             this.Panel1.Controls.Add(this.LabelIdP1);
-            this.Panel1.Controls.Add(this.TextBoxAnswerP1);
             this.Panel1.Controls.Add(this.LabelAnswerP1);
             this.Panel1.Controls.Add(this.LabelQuestionP1);
             this.Panel1.Controls.Add(this.TextBoxQuestionP1);
@@ -176,7 +176,7 @@
             // 
             this.TextBoxAnnotationP1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.TextBoxAnnotationP1.Location = new System.Drawing.Point(3, 291);
+            this.TextBoxAnnotationP1.Location = new System.Drawing.Point(3, 250);
             this.TextBoxAnnotationP1.Multiline = true;
             this.TextBoxAnnotationP1.Name = "TextBoxAnnotationP1";
             this.TextBoxAnnotationP1.Size = new System.Drawing.Size(167, 50);
@@ -185,7 +185,7 @@
             // LabelAnnotationP1
             // 
             this.LabelAnnotationP1.AutoSize = true;
-            this.LabelAnnotationP1.Location = new System.Drawing.Point(3, 275);
+            this.LabelAnnotationP1.Location = new System.Drawing.Point(3, 234);
             this.LabelAnnotationP1.Name = "LabelAnnotationP1";
             this.LabelAnnotationP1.Size = new System.Drawing.Size(80, 13);
             this.LabelAnnotationP1.TabIndex = 11;
@@ -194,7 +194,7 @@
             // CheckBoxConsultationP1
             // 
             this.CheckBoxConsultationP1.AutoSize = true;
-            this.CheckBoxConsultationP1.Location = new System.Drawing.Point(90, 205);
+            this.CheckBoxConsultationP1.Location = new System.Drawing.Point(90, 164);
             this.CheckBoxConsultationP1.Name = "CheckBoxConsultationP1";
             this.CheckBoxConsultationP1.Size = new System.Drawing.Size(15, 14);
             this.CheckBoxConsultationP1.TabIndex = 10;
@@ -204,7 +204,7 @@
             // 
             this.TextBoxConsultationP1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.TextBoxConsultationP1.Location = new System.Drawing.Point(3, 222);
+            this.TextBoxConsultationP1.Location = new System.Drawing.Point(3, 181);
             this.TextBoxConsultationP1.Multiline = true;
             this.TextBoxConsultationP1.Name = "TextBoxConsultationP1";
             this.TextBoxConsultationP1.Size = new System.Drawing.Size(167, 50);
@@ -213,7 +213,7 @@
             // LabelConsultationP1
             // 
             this.LabelConsultationP1.AutoSize = true;
-            this.LabelConsultationP1.Location = new System.Drawing.Point(3, 205);
+            this.LabelConsultationP1.Location = new System.Drawing.Point(3, 164);
             this.LabelConsultationP1.Name = "LabelConsultationP1";
             this.LabelConsultationP1.Size = new System.Drawing.Size(81, 13);
             this.LabelConsultationP1.TabIndex = 8;
@@ -254,16 +254,6 @@
             this.LabelIdP1.Size = new System.Drawing.Size(19, 13);
             this.LabelIdP1.TabIndex = 4;
             this.LabelIdP1.Text = "Id:";
-            // 
-            // TextBoxAnswerP1
-            // 
-            this.TextBoxAnswerP1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.TextBoxAnswerP1.Location = new System.Drawing.Point(3, 152);
-            this.TextBoxAnswerP1.Multiline = true;
-            this.TextBoxAnswerP1.Name = "TextBoxAnswerP1";
-            this.TextBoxAnswerP1.Size = new System.Drawing.Size(167, 50);
-            this.TextBoxAnswerP1.TabIndex = 3;
             // 
             // LabelAnswerP1
             // 
@@ -438,6 +428,17 @@
             this.Properties.Text = "Свойства";
             this.Properties.CheckedChanged += new System.EventHandler(this.Properties_CheckedChanged);
             // 
+            // ButtonShowAnswer
+            // 
+            this.ButtonShowAnswer.Location = new System.Drawing.Point(49, 135);
+            this.ButtonShowAnswer.Name = "ButtonShowAnswer";
+            this.ButtonShowAnswer.Size = new System.Drawing.Size(35, 20);
+            this.ButtonShowAnswer.TabIndex = 13;
+            this.ButtonShowAnswer.Text = "***";
+            this.ButtonShowAnswer.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+            this.ButtonShowAnswer.UseVisualStyleBackColor = true;
+            this.ButtonShowAnswer.Click += new System.EventHandler(this.ButtonShowAnswer_Click);
+            // 
             // FormConstructor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -479,7 +480,6 @@
         private System.Windows.Forms.TextBox TextBoxQuestionP1;
         private System.Windows.Forms.Label LabelQuestionP1;
         private System.Windows.Forms.Label LabelAnswerP1;
-        private System.Windows.Forms.TextBox TextBoxAnswerP1;
         private System.Windows.Forms.Label LabelNameObjectP1;
         private System.Windows.Forms.Label LabelIdP1;
         private System.Windows.Forms.TextBox TextBoxIdP1;
@@ -499,5 +499,6 @@
         private System.Windows.Forms.ToolStripMenuItem Objects;
         private System.Windows.Forms.ToolStripMenuItem Properties;
         private System.Windows.Forms.Label LabelCaptionP3;
+        private System.Windows.Forms.Button ButtonShowAnswer;
     }
 }
