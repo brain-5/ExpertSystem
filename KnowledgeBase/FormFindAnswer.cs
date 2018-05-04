@@ -29,13 +29,13 @@ namespace KnowledgeBase
         {
             if (_tableGraphs != null)
             {
+                string filterUpper = filterIn?.ToUpper() ?? "";
                 foreach (var tableGraph in _tableGraphs)
                 {
                     if (tableGraph.UserAnswers == null) continue;
                     foreach (var answer in tableGraph.UserAnswers)
                     {                        
-                        var regex = new Regex(filterIn,RegexOptions.IgnoreCase);
-                        if(!regex.IsMatch(answer)) continue;
+                        if (!answer.ToUpper().Contains(filterUpper)) continue;
                         var index = DataGridView.Rows.Add(0, answer);
                         DataGridView.Rows[index].Tag = tableGraph;
                     }

@@ -65,7 +65,7 @@ namespace KnowledgeBase
             if (tableGraphsIn != null && tableGraphsIn.Count > 0)
             {
                 if (!string.IsNullOrEmpty(userAnswerIn))
-                {                    
+                {
                     var userAnswer = userAnswerIn.ToUpper();
 
                     if (CurrentTableGraph != null)
@@ -74,10 +74,11 @@ namespace KnowledgeBase
                         bool isFindAnswer = false;
                         foreach (TableGraph tableGraph in childsEnumerable)
                         {
+                            if (tableGraph.UserAnswers == null) continue;
                             string[] masStrings = tableGraph.UserAnswers.ToArray();
                             foreach (string st in masStrings)
                             {
-                                if (userAnswer.Contains(st))
+                                if (userAnswer.Contains(st.ToUpper()))
                                 {
                                     resTableGraph = tableGraph;
                                     isFindAnswer = true;
@@ -89,6 +90,7 @@ namespace KnowledgeBase
 
                         if (!isFindAnswer)
                         {
+                            PrintUserTextToChat(userAnswerIn);
                             UserMistakeCount++;
                             PrintSystemTextToChat("Я вас не понял, повторите ответ.", null);
                         }
@@ -107,13 +109,13 @@ namespace KnowledgeBase
             }
         }
 
-        public void MoveToTableGraph([CanBeNull] string userAnswerIn,[NotNull] TableGraph tableGraphIn)
+        public void MoveToTableGraph([CanBeNull] string userAnswerIn, [NotNull] TableGraph tableGraphIn)
         {
             CurrentTableGraph = tableGraphIn;
 
             UserMistakeCount = 0;
 
-            if(!string.IsNullOrEmpty(userAnswerIn)) PrintUserTextToChat(userAnswerIn);
+            if (!string.IsNullOrEmpty(userAnswerIn)) PrintUserTextToChat(userAnswerIn);
             PrintSystemTextToChat(tableGraphIn.Question, tableGraphIn.IsShowConsultation ? tableGraphIn.Consultation : null);
 
             TableLog tableLog = new TableLog()
