@@ -283,6 +283,8 @@ namespace KnowledgeBase
 
         public void ResizeGraph(Point firstMousePointIn,Point secondMousePointIn, SizeF oldSizeIn)
         {
+            if (SelectedTableGraph == null) return;
+
             switch (EditSizeState)
             {
                 case EditSizeStateEnum.Top:
