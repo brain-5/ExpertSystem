@@ -34,7 +34,10 @@ namespace KnowledgeBase
 
             #region Graphics
 
-            public static Size GraphSize = new Size(20, 20);
+            public static Size GraphSize = new Size(40, 40);
+            /// <summary>
+            /// //Contains GraphSize
+            /// </summary>
             public RectangleF Rectangle;
             public Color GraphConstructorColor;
             public Color LineConstructorColor;

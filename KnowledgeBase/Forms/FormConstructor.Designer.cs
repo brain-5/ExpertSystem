@@ -35,6 +35,7 @@
             this.ButtonAddLayerP3 = new System.Windows.Forms.Button();
             this.TreeViewP3 = new System.Windows.Forms.TreeView();
             this.Panel1 = new System.Windows.Forms.Panel();
+            this.ButtonShowAnswer = new System.Windows.Forms.Button();
             this.TextBoxAnnotationP1 = new System.Windows.Forms.TextBox();
             this.LabelAnnotationP1 = new System.Windows.Forms.Label();
             this.CheckBoxConsultationP1 = new System.Windows.Forms.CheckBox();
@@ -60,7 +61,6 @@
             this.Layers = new System.Windows.Forms.ToolStripMenuItem();
             this.Objects = new System.Windows.Forms.ToolStripMenuItem();
             this.Properties = new System.Windows.Forms.ToolStripMenuItem();
-            this.ButtonShowAnswer = new System.Windows.Forms.Button();
             this.TableLayoutPanelBottom.SuspendLayout();
             this.Panel3.SuspendLayout();
             this.Panel1.SuspendLayout();
@@ -171,6 +171,17 @@
             this.Panel1.Name = "Panel1";
             this.Panel1.Size = new System.Drawing.Size(173, 386);
             this.Panel1.TabIndex = 1;
+            // 
+            // ButtonShowAnswer
+            // 
+            this.ButtonShowAnswer.Location = new System.Drawing.Point(49, 135);
+            this.ButtonShowAnswer.Name = "ButtonShowAnswer";
+            this.ButtonShowAnswer.Size = new System.Drawing.Size(35, 20);
+            this.ButtonShowAnswer.TabIndex = 13;
+            this.ButtonShowAnswer.Text = "***";
+            this.ButtonShowAnswer.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+            this.ButtonShowAnswer.UseVisualStyleBackColor = true;
+            this.ButtonShowAnswer.Click += new System.EventHandler(this.ButtonShowAnswer_Click);
             // 
             // TextBoxAnnotationP1
             // 
@@ -296,7 +307,6 @@
             this.Panel0.Size = new System.Drawing.Size(571, 386);
             this.Panel0.TabIndex = 2;
             this.Panel0.Paint += new System.Windows.Forms.PaintEventHandler(this.Panel0_Paint);
-            this.Panel0.MouseClick += new System.Windows.Forms.MouseEventHandler(this.Panel0_MouseClick);
             this.Panel0.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Panel0_MouseDown);
             this.Panel0.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Panel0_MouseMove);
             this.Panel0.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Panel0_MouseUp);
@@ -427,17 +437,6 @@
             this.Properties.Size = new System.Drawing.Size(125, 22);
             this.Properties.Text = "Свойства";
             this.Properties.CheckedChanged += new System.EventHandler(this.Properties_CheckedChanged);
-            // 
-            // ButtonShowAnswer
-            // 
-            this.ButtonShowAnswer.Location = new System.Drawing.Point(49, 135);
-            this.ButtonShowAnswer.Name = "ButtonShowAnswer";
-            this.ButtonShowAnswer.Size = new System.Drawing.Size(35, 20);
-            this.ButtonShowAnswer.TabIndex = 13;
-            this.ButtonShowAnswer.Text = "***";
-            this.ButtonShowAnswer.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
-            this.ButtonShowAnswer.UseVisualStyleBackColor = true;
-            this.ButtonShowAnswer.Click += new System.EventHandler(this.ButtonShowAnswer_Click);
             // 
             // FormConstructor
             // 

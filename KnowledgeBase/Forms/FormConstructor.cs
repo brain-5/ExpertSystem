@@ -17,6 +17,8 @@ namespace KnowledgeBase
     {
         private readonly Graph _graph = null;
         private Point _mouseRightClickPoint;
+        private Point _mouseLeftClickPoint;
+        private SizeF _oldSizeGraph;
         private readonly bool _isFormConstructor = false;
         private readonly UserSystemDialog _userSystemDialog = null;
 
@@ -80,7 +82,7 @@ namespace KnowledgeBase
         {
             TextBoxIdP1.TextChanged += GraphEditEventHandler;
             TextBoxNameObjectP1.TextChanged += GraphEditEventHandler;
-            TextBoxQuestionP1.TextChanged += GraphEditEventHandler;            
+            TextBoxQuestionP1.TextChanged += GraphEditEventHandler;
             TextBoxConsultationP1.TextChanged += GraphEditEventHandler;
             CheckBoxConsultationP1.CheckedChanged += GraphEditEventHandler;
             TextBoxAnnotationP1.TextChanged += GraphEditEventHandler;
@@ -223,15 +225,6 @@ namespace KnowledgeBase
             Panel0.Invalidate();
         }
 
-        private void Panel0_MouseClick(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Left)
-            {
-                _graph.SelectedTableGraph = _graph.SelectGraph(e.Location);
-                SetDataToControlsP1(_graph.SelectedTableGraph);
-            }
-        }
-
         private void Panel0_MouseMove(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Middle)
@@ -244,23 +237,84 @@ namespace KnowledgeBase
                 Panel0.Invalidate();
             }
             else if (e.Button == MouseButtons.Left)
-            {
-                if (_graph.SelectedTableGraph != null && _graph.GraphState == GraphStateEnum.Move)
-                {
-                    _graph.MoveGraph(_graph.SelectedTableGraph, e.Location);
-                    Panel0.Invalidate();
+            {                
+                if (_graph.SelectedTableGraph != null)
+                {                    
+                    if (_graph.GraphState == GraphStateEnum.Move)
+                    {
+                        //Перемещение графа
+                        _graph.MoveGraph(_graph.SelectedTableGraph, e.Location);
+                        Panel0.Invalidate();
+                    }
+                    else if (_graph.GraphState == GraphStateEnum.EditSize)
+                    {
+                        //Изменение размера у графа
+                        _graph.ResizeGraph(_mouseLeftClickPoint, e.Location, _oldSizeGraph);  
+                        Panel0.Invalidate();
+                    }
                 }
+            }
+            else if (_graph.GraphState == GraphStateEnum.EditSize)
+            {
+                //Показать курсор изменения
+                _graph.ShowCursorSizeAndAutosetEditState(e.Location);                
             }
         }
 
         private void Panel0_MouseDown(object sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Left && _graph.GraphState == GraphStateEnum.None)
+            if (e.Button == MouseButtons.Left)
             {
-                if (_graph.SelectGraph(e.Location) != null)
+
+                if (_graph.EditSizeState != EditSizeStateEnum.None)
                 {
-                    _graph.GraphState = GraphStateEnum.Move;
+                    if (_graph.SelectedTableGraph != null)
+                    {
+                        _mouseLeftClickPoint = e.Location;
+                        _oldSizeGraph = _graph.SelectedTableGraph.Rectangle.Size;
+                    }
                 }
+                else
+                {
+                    //Выделение графа
+                    _graph.SelectedTableGraph = _graph.SelectGraph(e.Location);
+                    SetDataToControlsP1(_graph.SelectedTableGraph);
+
+                    if (_graph.SelectedTableGraph != null)
+                    {
+                        _graph.GraphState = GraphStateEnum.Move;
+                    }
+                    else _graph.GraphState = GraphStateEnum.None;
+                }
+                /*if (_graph.EditSizeState == EditSizeStateEnum.None)
+                {
+                    //Выделение графа
+                    _graph.SelectedTableGraph = _graph.SelectGraph(e.Location);
+                    SetDataToControlsP1(_graph.SelectedTableGraph);
+
+                    if (_graph.SelectedTableGraph != null)
+                    {
+                        _graph.GraphState = GraphStateEnum.Move;
+                    }
+                    else _graph.GraphState = GraphStateEnum.None;
+                }*/
+
+                /* switch (_graph.GraphState)
+                 {
+                     case GraphStateEnum.Move:
+                         {
+                             break;
+                         }
+                     case GraphStateEnum.EditSize:
+                         {
+                             break;
+                         }
+                     default:
+                         {
+                             _graph.GraphState = GraphStateEnum.None;
+                             break;
+                         }
+                 }*/
             }
             else if (e.Button == MouseButtons.Middle)
             {
@@ -276,7 +330,7 @@ namespace KnowledgeBase
                     if (selectSecondGraph != null && selectSecondGraph != _graph.SelectedTableGraph)
                     {
                         ContextMenu c = new ContextMenu();
-                        c.MenuItems.Add("Создать линию", (x, a) =>
+                        c.MenuItems.Add("Создать линию", (ob, ev) =>
                         {
                             if (!selectSecondGraph.ParentIds.Contains(_graph.SelectedTableGraph.Id))
                             {
@@ -288,7 +342,11 @@ namespace KnowledgeBase
                     else
                     {
                         ContextMenu c = new ContextMenu();
-                        c.MenuItems.Add("Удалить граф", (x, a) =>
+                        c.MenuItems.Add("Изменить размер", (ob, ev) =>
+                        {
+                            _graph.GraphState = GraphStateEnum.EditSize;
+                        });
+                        c.MenuItems.Add("Удалить граф", (ob, ev) =>
                         {
                             foreach (TableGraph tg in _graph.ListGraphs)
                                 if (tg.ParentIds.Contains(_graph.SelectedTableGraph.Id))
@@ -304,7 +362,7 @@ namespace KnowledgeBase
 
                             Panel0.Invalidate();
                         });
-                        c.MenuItems.Add("Удалить линии с этим графом", (x, a) =>
+                        c.MenuItems.Add("Удалить линии с этим графом", (ob, ev) =>
                         {
                             foreach (TableGraph tg in _graph.ListGraphs)
                                 if (tg.ParentIds.Contains(_graph.SelectedTableGraph.Id))
@@ -320,7 +378,7 @@ namespace KnowledgeBase
 
         private void Panel0_MouseUp(object sender, MouseEventArgs e)
         {
-            _graph.GraphState = GraphStateEnum.None;
+            _graph.EditSizeState = EditSizeStateEnum.None;
         }
 
         #endregion
@@ -338,7 +396,7 @@ namespace KnowledgeBase
                 else if (sender == TextBoxQuestionP1)
                 {
                     _graph.SelectedTableGraph.Question = (sender as TextBox)?.Text;
-                }                
+                }
                 else if (sender == CheckBoxConsultationP1)
                 {
                     _graph.SelectedTableGraph.IsShowConsultation = ((CheckBox)sender).Checked;
@@ -360,7 +418,7 @@ namespace KnowledgeBase
             {
                 TextBoxIdP1.Text = tableGraph.Id.ToString();
                 TextBoxNameObjectP1.Text = tableGraph.NameObject;
-                TextBoxQuestionP1.Text = tableGraph.Question;                
+                TextBoxQuestionP1.Text = tableGraph.Question;
                 TextBoxConsultationP1.Text = tableGraph.Consultation;
                 CheckBoxConsultationP1.Checked = tableGraph.IsShowConsultation;
                 TextBoxAnnotationP1.Text = tableGraph.Annotation;
@@ -369,7 +427,7 @@ namespace KnowledgeBase
             {
                 TextBoxIdP1.Text = "";
                 TextBoxNameObjectP1.Text = "";
-                TextBoxQuestionP1.Text = "";                
+                TextBoxQuestionP1.Text = "";
                 TextBoxConsultationP1.Text = "";
                 CheckBoxConsultationP1.Checked = false;
                 TextBoxAnnotationP1.Text = "";
@@ -382,7 +440,7 @@ namespace KnowledgeBase
             {
                 if (_graph.SelectedTableGraph.UserAnswers == null) _graph.SelectedTableGraph.UserAnswers = new List<string>();
 
-                Globals.Forms.CreateFormEditAnswer(_graph.SelectedTableGraph.UserAnswers);                
+                Globals.Forms.CreateFormEditAnswer(_graph.SelectedTableGraph.UserAnswers);
             }
             else MessageBox.Show("Сначала надо выбрать граф.");
         }

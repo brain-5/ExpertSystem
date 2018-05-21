@@ -23,6 +23,7 @@ namespace KnowledgeBase
         public TableGraph SelectedTableGraph = null;
         public List<TableGraph> ListGraphs = null;
         public GraphStateEnum GraphState = GraphStateEnum.None;
+        public EditSizeStateEnum EditSizeState = EditSizeStateEnum.None;
 
         public Graph()
         {
@@ -62,8 +63,20 @@ namespace KnowledgeBase
                 else
                     graphBrush = new SolidBrush(graph.GraphConstructorColor);
 
-                graphics.FillEllipse(graphBrush, graph.Rectangle);
-                graphics.DrawString(graph.Id.ToString(), graphFont, textBrush, graph.Rectangle, textFormat);
+                if (graph.IsShowConsultation)
+                {
+                    PointF top = new PointF(graph.Rectangle.Left + graph.Rectangle.Width / 2.0f, graph.Rectangle.Top);
+                    PointF left = new PointF(graph.Rectangle.Left, graph.Rectangle.Bottom);
+                    PointF right = new PointF(graph.Rectangle.Right, graph.Rectangle.Bottom);
+
+                    graphics.FillPolygon(graphBrush, new[] { top, left, right });
+                }
+                else
+                {
+                    graphics.FillRectangle(graphBrush, graph.Rectangle);
+                }
+
+                graphics.DrawString(graph.NameObject, graphFont, textBrush, graph.Rectangle, textFormat);
 
                 DrawConnectionLine(graph, graphics);
 
@@ -99,8 +112,8 @@ namespace KnowledgeBase
                     float vecDirectLen = GetVecLength(vectorDirect);
 
                     //Ищем точки пересечения окружностей и прямой, что бы прямая не перекрывала окружность
-                    PointF firstCrossPoint = GetPointOnVector(firstLinePoint, secondLinePoint, TableGraph.GraphSize.Height / 2.0f);
-                    PointF secondCrossPoint = GetPointOnVector(firstLinePoint, secondLinePoint, vecDirectLen - TableGraph.GraphSize.Height / 2.0f);
+                    PointF firstCrossPoint = GetPointOnVector(firstLinePoint, secondLinePoint, firstGraph.Rectangle.Height / 2.0f);
+                    PointF secondCrossPoint = GetPointOnVector(firstLinePoint, secondLinePoint, vecDirectLen - tableGraphIn.Rectangle.Height / 2.0f);
 
                     //Чертим стрелочки направления прямой
                     //Угол боковой стрелочки к прямой будет 45 градусов
@@ -175,7 +188,7 @@ namespace KnowledgeBase
         /// Находит граф, который попадает в область mousePointIn и возвращает его.
         /// </summary>
         /// <param name="mousePointIn"></param>
-        /// <returns></returns>
+        /// <returns>TableGraph,null</returns>
         public TableGraph SelectGraph(PointF mousePointIn)
         {
             TableGraph tableGraph = null;
@@ -227,6 +240,98 @@ namespace KnowledgeBase
         public void ScaleIncreaseView(float scaleIncrease)
         {
             _scale += scaleIncrease;
+        }
+
+        public void ShowCursorSizeAndAutosetEditState(Point mousePointIn)
+        {
+            if (SelectedTableGraph == null) return;
+
+            int k = 4;
+            bool cursorChangeLeft = Math.Abs(Math.Abs(SelectedTableGraph.Rectangle.Left) - Math.Abs(mousePointIn.X)) <= k
+                                    && Math.Abs(SelectedTableGraph.Rectangle.Top) < Math.Abs(mousePointIn.Y)
+                                    && Math.Abs(SelectedTableGraph.Rectangle.Bottom) > Math.Abs(mousePointIn.Y);
+            bool cursorChangeRight = Math.Abs(Math.Abs(SelectedTableGraph.Rectangle.Right) - Math.Abs(mousePointIn.X)) <= k
+                                     && Math.Abs(SelectedTableGraph.Rectangle.Top) < Math.Abs(mousePointIn.Y)
+                                     && Math.Abs(SelectedTableGraph.Rectangle.Bottom) > Math.Abs(mousePointIn.Y);
+            bool cursorChangeTop = Math.Abs(Math.Abs(SelectedTableGraph.Rectangle.Top) - Math.Abs(mousePointIn.Y)) <= k
+                                   && Math.Abs(SelectedTableGraph.Rectangle.Left) < Math.Abs(mousePointIn.X)
+                                   && Math.Abs(SelectedTableGraph.Rectangle.Right) > Math.Abs(mousePointIn.X);
+            bool cursorChangeBottom = Math.Abs(Math.Abs(SelectedTableGraph.Rectangle.Bottom) - Math.Abs(mousePointIn.Y)) <= k
+                                      && Math.Abs(SelectedTableGraph.Rectangle.Left) < Math.Abs(mousePointIn.X)
+                                      && Math.Abs(SelectedTableGraph.Rectangle.Right) > Math.Abs(mousePointIn.X);
+            if (cursorChangeTop)
+            {
+                Cursor.Current = Cursors.SizeNS; EditSizeState = EditSizeStateEnum.Top;
+            }
+            else if (cursorChangeBottom)
+            {
+                Cursor.Current = Cursors.SizeNS; EditSizeState = EditSizeStateEnum.Bottom;
+            }
+            else if (cursorChangeLeft)
+            {
+                Cursor.Current = Cursors.SizeWE; EditSizeState = EditSizeStateEnum.Left;
+            }
+            else if (cursorChangeRight)
+            {
+                Cursor.Current = Cursors.SizeWE; EditSizeState = EditSizeStateEnum.Right;
+            }
+            else
+            {
+                EditSizeState = EditSizeStateEnum.None;
+            }
+        }
+
+        public void ResizeGraph(Point firstMousePointIn,Point secondMousePointIn, SizeF oldSizeIn)
+        {
+            switch (EditSizeState)
+            {
+                case EditSizeStateEnum.Top:
+                    {
+                        float diff = Math.Abs(firstMousePointIn.Y) - Math.Abs(secondMousePointIn.Y);
+                        if (oldSizeIn.Height + diff > TableGraph.GraphSize.Height)
+                        {
+                            SelectedTableGraph.Rectangle.Y = secondMousePointIn.Y;
+                            SelectedTableGraph.Rectangle.Height = oldSizeIn.Height + diff;
+                        }
+                        else
+                            SelectedTableGraph.Rectangle.Height = TableGraph.GraphSize.Height;
+
+                        break;
+                    }
+                case EditSizeStateEnum.Bottom:
+                    {
+                        float diff = Math.Abs(secondMousePointIn.Y) - Math.Abs(firstMousePointIn.Y);
+                        if (oldSizeIn.Height + diff > TableGraph.GraphSize.Height)
+                            SelectedTableGraph.Rectangle.Height = oldSizeIn.Height + diff;
+                        else
+                            SelectedTableGraph.Rectangle.Height = TableGraph.GraphSize.Height;
+
+                        break;
+                    }
+                case EditSizeStateEnum.Left:
+                    {
+                        float diff = Math.Abs(firstMousePointIn.X) - Math.Abs(secondMousePointIn.X);
+                        if (oldSizeIn.Width + diff > TableGraph.GraphSize.Width)
+                        {
+                            SelectedTableGraph.Rectangle.X = secondMousePointIn.X;
+                            SelectedTableGraph.Rectangle.Width = oldSizeIn.Width + diff;
+                        }
+                        else
+                            SelectedTableGraph.Rectangle.Width = TableGraph.GraphSize.Width;
+
+                        break;
+                    }
+                case EditSizeStateEnum.Right:
+                    {
+                        float diff = Math.Abs(secondMousePointIn.X) - Math.Abs(firstMousePointIn.X);
+                        if (oldSizeIn.Width + diff > TableGraph.GraphSize.Width)
+                            SelectedTableGraph.Rectangle.Width = oldSizeIn.Width + diff;
+                        else
+                            SelectedTableGraph.Rectangle.Width = TableGraph.GraphSize.Width;
+                        break;
+                    }
+                default: break;
+            }
         }
     }
 }

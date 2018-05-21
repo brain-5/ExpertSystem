@@ -10,6 +10,7 @@ namespace KnowledgeBase
     {
         None,
         Move,
-        ContextMenu
+        ContextMenu,
+        EditSize
     }
 }
