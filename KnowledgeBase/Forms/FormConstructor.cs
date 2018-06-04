@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Media;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,6 +20,12 @@ namespace KnowledgeBase
         private Point _mouseRightClickPoint;
         private Point _mouseLeftClickPoint;
         private SizeF _oldSizeGraph;
+
+        /// <summary>
+        /// Используется для ресайзинга TableLayoutPanelBottom
+        /// </summary>
+        private EditSizeStateEnum _editSizeStateTLPB = EditSizeStateEnum.None;
+
         private readonly bool _isFormConstructor = false;
         private readonly UserSystemDialog _userSystemDialog = null;
 
@@ -120,13 +127,13 @@ namespace KnowledgeBase
         {
             if (Layers.Checked)
             {
-                TableLayoutPanelBottom.ColumnStyles[0].Width = 15.0f;
-                TableLayoutPanelBottom.ColumnStyles[0].SizeType = SizeType.Percent;
+                TableLayoutPanelBottom.ColumnStyles[0].Width = 150.0f;
+                TableLayoutPanelBottom.ColumnStyles[0].SizeType = SizeType.Absolute;
             }
             else
             {
                 TableLayoutPanelBottom.ColumnStyles[0].Width = 0.0f;
-                TableLayoutPanelBottom.ColumnStyles[0].SizeType = SizeType.Percent;
+                TableLayoutPanelBottom.ColumnStyles[0].SizeType = SizeType.Absolute;
             }
         }
 
@@ -174,6 +181,11 @@ namespace KnowledgeBase
 
         private void AddNewLayer()
         {
+            if (TreeViewP3.SelectedNode.Tag != null)
+            {
+                MessageBox.Show("Слои можно добавлять только для слоёв, а не для графов."); return;
+            }
+
             int number = GetLastNumberNode(TreeViewP3.Nodes);
             string textForNewNode = "Node" + number;
             if (TreeViewP3.SelectedNode != null)
@@ -225,6 +237,26 @@ namespace KnowledgeBase
             Panel0.Invalidate();
         }
 
+        private void Panel0_DoubleClick(object sender, EventArgs e)
+        {
+            if (_isFormConstructor)
+            {
+                if (_graph.SelectedPreviousTableGraph != null)
+                {
+                    _graph.SelectedPreviousTableGraph.LayerTreeNodeOwner.BackColor = Color.White;
+                    _graph.SelectedPreviousTableGraph.IsDrawGraphBorderLine = false;
+                    Panel0.Invalidate();
+                }
+                if (_graph.SelectedTableGraph != null)
+                {
+                    _graph.SelectedTableGraph.LayerTreeNodeOwner.BackColor = Color.LightSeaGreen;
+                    _graph.SelectedTableGraph.IsDrawGraphBorderLine = true;
+                    _graph.SelectedTableGraph.LayerTreeNodeOwner.EnsureVisible();
+                    Panel0.Invalidate();
+                }                
+            }
+        }
+
         private void Panel0_MouseMove(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Middle)
@@ -237,9 +269,9 @@ namespace KnowledgeBase
                 Panel0.Invalidate();
             }
             else if (e.Button == MouseButtons.Left)
-            {                
+            {
                 if (_graph.SelectedTableGraph != null)
-                {                    
+                {
                     if (_graph.GraphState == GraphStateEnum.Move)
                     {
                         //Перемещение графа
@@ -249,7 +281,7 @@ namespace KnowledgeBase
                     else if (_graph.GraphState == GraphStateEnum.EditSize)
                     {
                         //Изменение размера у графа
-                        _graph.ResizeGraph(_mouseLeftClickPoint, e.Location, _oldSizeGraph);  
+                        _graph.ResizeGraph(_mouseLeftClickPoint, e.Location, _oldSizeGraph);
                         Panel0.Invalidate();
                     }
                 }
@@ -257,7 +289,7 @@ namespace KnowledgeBase
             else if (_graph.GraphState == GraphStateEnum.EditSize)
             {
                 //Показать курсор изменения
-                _graph.ShowCursorSizeAndAutosetEditState(e.Location);                
+                _graph.ShowCursorSizeAndAutosetEditState(e.Location);
             }
         }
 
@@ -265,7 +297,6 @@ namespace KnowledgeBase
         {
             if (e.Button == MouseButtons.Left)
             {
-
                 if (_graph.EditSizeState != EditSizeStateEnum.None)
                 {
                     if (_graph.SelectedTableGraph != null)
@@ -277,7 +308,12 @@ namespace KnowledgeBase
                 else
                 {
                     //Выделение графа
+                    var oldTableGraph = _graph.SelectedTableGraph;                    
                     _graph.SelectedTableGraph = _graph.SelectGraph(e.Location);
+                    if (_graph.SelectedTableGraph != null && oldTableGraph != null && _graph.SelectedTableGraph.Id != oldTableGraph.Id 
+                                                          || oldTableGraph != null && _graph.SelectedTableGraph == null)
+                        _graph.SelectedPreviousTableGraph = oldTableGraph;
+
                     SetDataToControlsP1(_graph.SelectedTableGraph);
 
                     if (_graph.SelectedTableGraph != null)
@@ -456,9 +492,19 @@ namespace KnowledgeBase
             var maxItem = (from v in _graph.ListGraphs orderby v.Id descending select v).FirstOrDefault();
             if (maxItem != null)
             {
+                //Получим номер графа в текущем дереве
+                var countNodes = TreeViewP3?.SelectedNode?.Nodes.Count;
+                var idNode = 0;
+                if (countNodes != null)
+                {
+                    foreach (var node in TreeViewP3.SelectedNode.Nodes)
+                    {
+                        if (node != null) idNode++;
+                    }
+                }
                 tableGraph = new TableGraph()
                 {
-                    Id = maxItem.Id + 1,
+                    Id = idNode + 1,
                     Rectangle = new RectangleF(
                         new PointF(maxItem.Rectangle.X + TableGraph.GraphSize.Width * 2,
                         maxItem.Rectangle.Y + TableGraph.GraphSize.Height * 2),
@@ -472,6 +518,7 @@ namespace KnowledgeBase
                     Rectangle = new Rectangle(Point.Empty, TableGraph.GraphSize)
                 };
             }
+
 
             tableGraph.LayerTreeNodeOwner = AddObjectToLayer(tableGraph.Id.ToString());
             tableGraph.LayerTreeNodeOwner.Tag = tableGraph.Id;
@@ -546,6 +593,55 @@ namespace KnowledgeBase
 
 
         #endregion
+
+        #region TableLayoutPanelBottom
+
+        /// <summary>
+        /// Показать курсор изменения размера у колонки со слоями (TableLayoutPanelBottom)
+        /// </summary>
+        /// <param name="locationIn">Позиция курсоса</param>
+        /// <returns></returns>
+        private bool IsShowResizeCursorTableLayoutPanelBottom(Point locationIn)
+        {
+            int k = 10;
+            bool res = Math.Abs(TableLayoutPanelBottom.ColumnStyles[0].Width - locationIn.X) <= k
+                && 0 < locationIn.Y
+                && TableLayoutPanelBottom.Height > locationIn.Y;
+
+            return res;
+        }
+
+        private void TableLayoutPanelBottom_MouseMove(object sender, MouseEventArgs e)
+        {
+            bool cursorChangeRight = IsShowResizeCursorTableLayoutPanelBottom(e.Location);
+            if (cursorChangeRight) Cursor.Current = Cursors.SizeWE;
+
+            if (e.Button == MouseButtons.Left && _editSizeStateTLPB == EditSizeStateEnum.Right)
+            {
+                float width = e.X;
+                if (width >= 0.0f) TableLayoutPanelBottom.ColumnStyles[0].Width = width;
+                else TableLayoutPanelBottom.ColumnStyles[0].Width = 0.0f;
+                TableLayoutPanelBottom.ColumnStyles[0].SizeType = SizeType.Absolute;
+            }
+        }
+
+        private void TableLayoutPanelBottom_MouseDown(object sender, MouseEventArgs e)
+        {
+            bool cursorChangeRight = IsShowResizeCursorTableLayoutPanelBottom(e.Location);
+            if (cursorChangeRight)
+            {
+                _editSizeStateTLPB = EditSizeStateEnum.Right;
+                _mouseLeftClickPoint = e.Location;
+            }
+        }
+
+        private void TableLayoutPanelBottom_MouseUp(object sender, MouseEventArgs e)
+        {
+            _editSizeStateTLPB = EditSizeStateEnum.None;
+        }
+
+        #endregion
+
 
     }
 }

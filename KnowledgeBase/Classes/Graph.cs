@@ -21,6 +21,7 @@ namespace KnowledgeBase
         private Matrix _matrixTransform = null;
 
         public TableGraph SelectedTableGraph = null;
+        public TableGraph SelectedPreviousTableGraph = null;
         public List<TableGraph> ListGraphs = null;
         public GraphStateEnum GraphState = GraphStateEnum.None;
         public EditSizeStateEnum EditSizeState = EditSizeStateEnum.None;
@@ -55,6 +56,7 @@ namespace KnowledgeBase
                 };
 
                 Brush graphBrush = null;
+                Pen graphPenBorder = new Pen(graph.GraphBorderColor, 1.0f);                
 
                 if (graph.IsCurrentGraphForResult)
                     graphBrush = new SolidBrush(graph.CurrentGraphResultColor);
@@ -70,10 +72,16 @@ namespace KnowledgeBase
                     PointF right = new PointF(graph.Rectangle.Right, graph.Rectangle.Bottom);
 
                     graphics.FillPolygon(graphBrush, new[] { top, left, right });
+
+                    if (graph.IsDrawGraphBorderLine) graphics.DrawPolygon(graphPenBorder, new[] { top, left, right});                    
                 }
                 else
                 {
                     graphics.FillRectangle(graphBrush, graph.Rectangle);
+
+                    if (graph.IsDrawGraphBorderLine)
+                        graphics.DrawRectangle(graphPenBorder, graph.Rectangle.X, graph.Rectangle.Y,
+                            graph.Rectangle.Width, graph.Rectangle.Height);
                 }
 
                 graphics.DrawString(graph.NameObject, graphFont, textBrush, graph.Rectangle, textFormat);
@@ -281,7 +289,7 @@ namespace KnowledgeBase
             }
         }
 
-        public void ResizeGraph(Point firstMousePointIn,Point secondMousePointIn, SizeF oldSizeIn)
+        public void ResizeGraph(Point firstMousePointIn, Point secondMousePointIn, SizeF oldSizeIn)
         {
             if (SelectedTableGraph == null) return;
 

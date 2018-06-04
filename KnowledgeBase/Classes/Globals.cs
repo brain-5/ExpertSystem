@@ -39,9 +39,12 @@ namespace KnowledgeBase
             /// //Contains GraphSize
             /// </summary>
             public RectangleF Rectangle;
+            public bool IsDrawGraphBorderLine = false;
             public Color GraphConstructorColor;
             public Color LineConstructorColor;
             public Color TextConstructorColor;
+
+            public Color GraphBorderColor;
 
             public Color GraphResultColor;
             public Color LineResultColor;
@@ -72,7 +75,7 @@ namespace KnowledgeBase
                 ParentIds = new List<int>();
                 GraphConstructorColor = Color.CornflowerBlue; LineConstructorColor = Color.Black; TextConstructorColor = Color.White;
                 GraphResultColor = Color.DarkSeaGreen; LineResultColor = Color.DarkSeaGreen; TextResultColor = Color.White;
-                CurrentGraphResultColor = Color.LightSeaGreen;
+                CurrentGraphResultColor = Color.LightSeaGreen; GraphBorderColor = Color.Black;
             }
 
             public object Clone()
@@ -85,7 +88,7 @@ namespace KnowledgeBase
         {
             public string Text = null;
             public bool IsCheked = false;
-            public int GraphId = -1;
+            public int? GraphId = null;
             public List<TreeViewSerialize> NodeList = null;
         }
 
@@ -127,7 +130,7 @@ namespace KnowledgeBase
                     {
                         TreeViewSerialize tvSerialize = new TreeViewSerialize()
                         {
-                            GraphId = (int)(node.Tag ?? -1),
+                            GraphId = (int?)node.Tag,
                             IsCheked = node.Checked,
                             Text = node.Text
                         };

@@ -7,7 +7,7 @@
       {
         "Text": "Node0",
         "IsCheked": true,
-        "GraphId": -1,
+        "GraphId": null,
         "NodeList": [
           {
             "Text": "Главный слой",

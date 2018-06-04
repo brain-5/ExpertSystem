@@ -76,9 +76,9 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.TableLayoutPanelBottom.ColumnCount = 3;
-            this.TableLayoutPanelBottom.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 15.00383F));
-            this.TableLayoutPanelBottom.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 64.99708F));
-            this.TableLayoutPanelBottom.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 19.9991F));
+            this.TableLayoutPanelBottom.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 150F));
+            this.TableLayoutPanelBottom.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 76.47059F));
+            this.TableLayoutPanelBottom.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 23.52941F));
             this.TableLayoutPanelBottom.Controls.Add(this.Panel3, 0, 0);
             this.TableLayoutPanelBottom.Controls.Add(this.Panel1, 2, 0);
             this.TableLayoutPanelBottom.Controls.Add(this.Panel0, 1, 0);
@@ -88,6 +88,9 @@
             this.TableLayoutPanelBottom.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.TableLayoutPanelBottom.Size = new System.Drawing.Size(889, 392);
             this.TableLayoutPanelBottom.TabIndex = 0;
+            this.TableLayoutPanelBottom.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TableLayoutPanelBottom_MouseDown);
+            this.TableLayoutPanelBottom.MouseMove += new System.Windows.Forms.MouseEventHandler(this.TableLayoutPanelBottom_MouseMove);
+            this.TableLayoutPanelBottom.MouseUp += new System.Windows.Forms.MouseEventHandler(this.TableLayoutPanelBottom_MouseUp);
             // 
             // Panel3
             // 
@@ -101,7 +104,7 @@
             this.Panel3.Controls.Add(this.TreeViewP3);
             this.Panel3.Location = new System.Drawing.Point(3, 3);
             this.Panel3.Name = "Panel3";
-            this.Panel3.Size = new System.Drawing.Size(127, 386);
+            this.Panel3.Size = new System.Drawing.Size(144, 386);
             this.Panel3.TabIndex = 0;
             // 
             // LabelCaptionP3
@@ -142,7 +145,7 @@
             this.TreeViewP3.LabelEdit = true;
             this.TreeViewP3.Location = new System.Drawing.Point(3, 27);
             this.TreeViewP3.Name = "TreeViewP3";
-            this.TreeViewP3.Size = new System.Drawing.Size(121, 356);
+            this.TreeViewP3.Size = new System.Drawing.Size(138, 356);
             this.TreeViewP3.TabIndex = 0;
             this.TreeViewP3.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.TreeViewP3_AfterCheck);
             this.TreeViewP3.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.TreeViewP3_NodeMouseDoubleClick);
@@ -167,9 +170,9 @@
             this.Panel1.Controls.Add(this.LabelAnswerP1);
             this.Panel1.Controls.Add(this.LabelQuestionP1);
             this.Panel1.Controls.Add(this.TextBoxQuestionP1);
-            this.Panel1.Location = new System.Drawing.Point(713, 3);
+            this.Panel1.Location = new System.Drawing.Point(718, 3);
             this.Panel1.Name = "Panel1";
-            this.Panel1.Size = new System.Drawing.Size(173, 386);
+            this.Panel1.Size = new System.Drawing.Size(168, 386);
             this.Panel1.TabIndex = 1;
             // 
             // ButtonShowAnswer
@@ -190,7 +193,7 @@
             this.TextBoxAnnotationP1.Location = new System.Drawing.Point(3, 250);
             this.TextBoxAnnotationP1.Multiline = true;
             this.TextBoxAnnotationP1.Name = "TextBoxAnnotationP1";
-            this.TextBoxAnnotationP1.Size = new System.Drawing.Size(167, 50);
+            this.TextBoxAnnotationP1.Size = new System.Drawing.Size(162, 50);
             this.TextBoxAnnotationP1.TabIndex = 12;
             // 
             // LabelAnnotationP1
@@ -218,7 +221,7 @@
             this.TextBoxConsultationP1.Location = new System.Drawing.Point(3, 181);
             this.TextBoxConsultationP1.Multiline = true;
             this.TextBoxConsultationP1.Name = "TextBoxConsultationP1";
-            this.TextBoxConsultationP1.Size = new System.Drawing.Size(167, 50);
+            this.TextBoxConsultationP1.Size = new System.Drawing.Size(162, 50);
             this.TextBoxConsultationP1.TabIndex = 9;
             // 
             // LabelConsultationP1
@@ -236,7 +239,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.TextBoxNameObjectP1.Location = new System.Drawing.Point(3, 43);
             this.TextBoxNameObjectP1.Name = "TextBoxNameObjectP1";
-            this.TextBoxNameObjectP1.Size = new System.Drawing.Size(167, 20);
+            this.TextBoxNameObjectP1.Size = new System.Drawing.Size(162, 20);
             this.TextBoxNameObjectP1.TabIndex = 7;
             // 
             // TextBoxIdP1
@@ -245,7 +248,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.TextBoxIdP1.Location = new System.Drawing.Point(20, 4);
             this.TextBoxIdP1.Name = "TextBoxIdP1";
-            this.TextBoxIdP1.Size = new System.Drawing.Size(150, 20);
+            this.TextBoxIdP1.Size = new System.Drawing.Size(145, 20);
             this.TextBoxIdP1.TabIndex = 6;
             // 
             // LabelNameObjectP1
@@ -291,7 +294,7 @@
             this.TextBoxQuestionP1.Location = new System.Drawing.Point(3, 82);
             this.TextBoxQuestionP1.Multiline = true;
             this.TextBoxQuestionP1.Name = "TextBoxQuestionP1";
-            this.TextBoxQuestionP1.Size = new System.Drawing.Size(167, 50);
+            this.TextBoxQuestionP1.Size = new System.Drawing.Size(162, 50);
             this.TextBoxQuestionP1.TabIndex = 0;
             // 
             // Panel0
@@ -302,11 +305,12 @@
             this.Panel0.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
             this.Panel0.Controls.Add(this.ButtonScaleMinus);
             this.Panel0.Controls.Add(this.ButtonScalePlus);
-            this.Panel0.Location = new System.Drawing.Point(136, 3);
+            this.Panel0.Location = new System.Drawing.Point(153, 3);
             this.Panel0.Name = "Panel0";
-            this.Panel0.Size = new System.Drawing.Size(571, 386);
+            this.Panel0.Size = new System.Drawing.Size(559, 386);
             this.Panel0.TabIndex = 2;
             this.Panel0.Paint += new System.Windows.Forms.PaintEventHandler(this.Panel0_Paint);
+            this.Panel0.DoubleClick += new System.EventHandler(this.Panel0_DoubleClick);
             this.Panel0.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Panel0_MouseDown);
             this.Panel0.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Panel0_MouseMove);
             this.Panel0.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Panel0_MouseUp);
@@ -314,7 +318,7 @@
             // ButtonScaleMinus
             // 
             this.ButtonScaleMinus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.ButtonScaleMinus.Location = new System.Drawing.Point(493, 27);
+            this.ButtonScaleMinus.Location = new System.Drawing.Point(481, 27);
             this.ButtonScaleMinus.Name = "ButtonScaleMinus";
             this.ButtonScaleMinus.Size = new System.Drawing.Size(75, 23);
             this.ButtonScaleMinus.TabIndex = 1;
@@ -325,7 +329,7 @@
             // ButtonScalePlus
             // 
             this.ButtonScalePlus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.ButtonScalePlus.Location = new System.Drawing.Point(493, 3);
+            this.ButtonScalePlus.Location = new System.Drawing.Point(481, 3);
             this.ButtonScalePlus.Name = "ButtonScalePlus";
             this.ButtonScalePlus.Size = new System.Drawing.Size(75, 23);
             this.ButtonScalePlus.TabIndex = 0;
