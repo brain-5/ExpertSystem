@@ -61,6 +61,7 @@
             this.Layers = new System.Windows.Forms.ToolStripMenuItem();
             this.Objects = new System.Windows.Forms.ToolStripMenuItem();
             this.Properties = new System.Windows.Forms.ToolStripMenuItem();
+            this.ButtonReference = new System.Windows.Forms.Button();
             this.TableLayoutPanelBottom.SuspendLayout();
             this.Panel3.SuspendLayout();
             this.Panel1.SuspendLayout();
@@ -360,6 +361,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.Panel2.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.Panel2.Controls.Add(this.ButtonReference);
             this.Panel2.Controls.Add(this.ButtonAddGrapthP2);
             this.Panel2.Location = new System.Drawing.Point(3, 3);
             this.Panel2.Name = "Panel2";
@@ -442,6 +444,16 @@
             this.Properties.Text = "Свойства";
             this.Properties.CheckedChanged += new System.EventHandler(this.Properties_CheckedChanged);
             // 
+            // ButtonReference
+            // 
+            this.ButtonReference.Location = new System.Drawing.Point(102, 0);
+            this.ButtonReference.Name = "ButtonReference";
+            this.ButtonReference.Size = new System.Drawing.Size(72, 23);
+            this.ButtonReference.TabIndex = 3;
+            this.ButtonReference.Text = "Ссылка";
+            this.ButtonReference.UseVisualStyleBackColor = true;
+            this.ButtonReference.Click += new System.EventHandler(this.ButtonReference_Click);
+            // 
             // FormConstructor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -503,5 +515,6 @@
         private System.Windows.Forms.ToolStripMenuItem Properties;
         private System.Windows.Forms.Label LabelCaptionP3;
         private System.Windows.Forms.Button ButtonShowAnswer;
+        private System.Windows.Forms.Button ButtonReference;
     }
 }

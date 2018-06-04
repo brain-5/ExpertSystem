@@ -48,7 +48,7 @@ namespace KnowledgeBase
                 if (!IsShowGraph(graph)) continue;
 
                 Brush textBrush = new SolidBrush(graph.TextConstructorColor);
-                Font graphFont = new Font(FontFamily.GenericSansSerif, 10f);
+                Font graphFont = new Font(FontFamily.GenericSansSerif, 12f,FontStyle.Bold);
                 StringFormat textFormat = new StringFormat
                 {
                     Alignment = StringAlignment.Center,
@@ -56,7 +56,7 @@ namespace KnowledgeBase
                 };
 
                 Brush graphBrush = null;
-                Pen graphPenBorder = new Pen(graph.GraphBorderColor, 1.0f);                
+                Pen graphPenBorder = new Pen(graph.GraphBorderColor, 1.0f);
 
                 if (graph.IsCurrentGraphForResult)
                     graphBrush = new SolidBrush(graph.CurrentGraphResultColor);
@@ -65,7 +65,16 @@ namespace KnowledgeBase
                 else
                     graphBrush = new SolidBrush(graph.GraphConstructorColor);
 
-                if (graph.IsShowConsultation)
+                if (graph.IsReference)
+                {
+                    PointF top = new PointF(graph.Rectangle.Left + graph.Rectangle.Width / 2.0f, graph.Rectangle.Top);
+                    PointF left = new PointF(graph.Rectangle.Left, graph.Rectangle.Bottom - graph.Rectangle.Height / 2.0f);
+                    PointF right = new PointF(graph.Rectangle.Right, graph.Rectangle.Bottom - graph.Rectangle.Height / 2.0f);
+                    PointF bottom = new PointF(graph.Rectangle.Left + graph.Rectangle.Width / 2.0f, graph.Rectangle.Bottom);
+
+                    graphics.FillPolygon(graphBrush, new[] { top, left, bottom, right });
+                }
+                else if (graph.IsShowConsultation)
                 {
                     PointF top = new PointF(graph.Rectangle.Left + graph.Rectangle.Width / 2.0f, graph.Rectangle.Top);
                     PointF left = new PointF(graph.Rectangle.Left, graph.Rectangle.Bottom);
@@ -73,7 +82,7 @@ namespace KnowledgeBase
 
                     graphics.FillPolygon(graphBrush, new[] { top, left, right });
 
-                    if (graph.IsDrawGraphBorderLine) graphics.DrawPolygon(graphPenBorder, new[] { top, left, right});                    
+                    if (graph.IsDrawGraphBorderLine) graphics.DrawPolygon(graphPenBorder, new[] { top, left, right });
                 }
                 else
                 {
@@ -86,8 +95,7 @@ namespace KnowledgeBase
 
                 graphics.DrawString(graph.NameObject, graphFont, textBrush, graph.Rectangle, textFormat);
 
-                DrawConnectionLine(graph, graphics);
-
+                if(!graph.IsReference) DrawConnectionLine(graph, graphics);
 
                 graphBrush.Dispose(); graphBrush = null;
                 textBrush.Dispose(); textBrush = null;
@@ -254,19 +262,21 @@ namespace KnowledgeBase
         {
             if (SelectedTableGraph == null) return;
 
+            PointF translateScaleMousePoint = GetTransformPointFromMatrix(_matrixTransform, mousePointIn);
+
             int k = 4;
-            bool cursorChangeLeft = Math.Abs(Math.Abs(SelectedTableGraph.Rectangle.Left) - Math.Abs(mousePointIn.X)) <= k
-                                    && Math.Abs(SelectedTableGraph.Rectangle.Top) < Math.Abs(mousePointIn.Y)
-                                    && Math.Abs(SelectedTableGraph.Rectangle.Bottom) > Math.Abs(mousePointIn.Y);
-            bool cursorChangeRight = Math.Abs(Math.Abs(SelectedTableGraph.Rectangle.Right) - Math.Abs(mousePointIn.X)) <= k
-                                     && Math.Abs(SelectedTableGraph.Rectangle.Top) < Math.Abs(mousePointIn.Y)
-                                     && Math.Abs(SelectedTableGraph.Rectangle.Bottom) > Math.Abs(mousePointIn.Y);
-            bool cursorChangeTop = Math.Abs(Math.Abs(SelectedTableGraph.Rectangle.Top) - Math.Abs(mousePointIn.Y)) <= k
-                                   && Math.Abs(SelectedTableGraph.Rectangle.Left) < Math.Abs(mousePointIn.X)
-                                   && Math.Abs(SelectedTableGraph.Rectangle.Right) > Math.Abs(mousePointIn.X);
-            bool cursorChangeBottom = Math.Abs(Math.Abs(SelectedTableGraph.Rectangle.Bottom) - Math.Abs(mousePointIn.Y)) <= k
-                                      && Math.Abs(SelectedTableGraph.Rectangle.Left) < Math.Abs(mousePointIn.X)
-                                      && Math.Abs(SelectedTableGraph.Rectangle.Right) > Math.Abs(mousePointIn.X);
+            bool cursorChangeLeft = Math.Abs(Math.Abs(SelectedTableGraph.Rectangle.Left) - Math.Abs(translateScaleMousePoint.X)) <= k
+                                    && Math.Abs(SelectedTableGraph.Rectangle.Top) < Math.Abs(translateScaleMousePoint.Y)
+                                    && Math.Abs(SelectedTableGraph.Rectangle.Bottom) > Math.Abs(translateScaleMousePoint.Y);
+            bool cursorChangeRight = Math.Abs(Math.Abs(SelectedTableGraph.Rectangle.Right) - Math.Abs(translateScaleMousePoint.X)) <= k
+                                     && Math.Abs(SelectedTableGraph.Rectangle.Top) < Math.Abs(translateScaleMousePoint.Y)
+                                     && Math.Abs(SelectedTableGraph.Rectangle.Bottom) > Math.Abs(translateScaleMousePoint.Y);
+            bool cursorChangeTop = Math.Abs(Math.Abs(SelectedTableGraph.Rectangle.Top) - Math.Abs(translateScaleMousePoint.Y)) <= k
+                                   && Math.Abs(SelectedTableGraph.Rectangle.Left) < Math.Abs(translateScaleMousePoint.X)
+                                   && Math.Abs(SelectedTableGraph.Rectangle.Right) > Math.Abs(translateScaleMousePoint.X);
+            bool cursorChangeBottom = Math.Abs(Math.Abs(SelectedTableGraph.Rectangle.Bottom) - Math.Abs(translateScaleMousePoint.Y)) <= k
+                                      && Math.Abs(SelectedTableGraph.Rectangle.Left) < Math.Abs(translateScaleMousePoint.X)
+                                      && Math.Abs(SelectedTableGraph.Rectangle.Right) > Math.Abs(translateScaleMousePoint.X);
             if (cursorChangeTop)
             {
                 Cursor.Current = Cursors.SizeNS; EditSizeState = EditSizeStateEnum.Top;
@@ -293,14 +303,17 @@ namespace KnowledgeBase
         {
             if (SelectedTableGraph == null) return;
 
+            PointF translateScaleMousePointFirst = GetTransformPointFromMatrix(_matrixTransform, firstMousePointIn);
+            PointF translateScaleMousePointSecond = GetTransformPointFromMatrix(_matrixTransform, secondMousePointIn);
+
             switch (EditSizeState)
             {
                 case EditSizeStateEnum.Top:
                     {
-                        float diff = Math.Abs(firstMousePointIn.Y) - Math.Abs(secondMousePointIn.Y);
+                        float diff = Math.Abs(translateScaleMousePointFirst.Y) - Math.Abs(translateScaleMousePointSecond.Y);
                         if (oldSizeIn.Height + diff > TableGraph.GraphSize.Height)
                         {
-                            SelectedTableGraph.Rectangle.Y = secondMousePointIn.Y;
+                            SelectedTableGraph.Rectangle.Y = translateScaleMousePointSecond.Y;
                             SelectedTableGraph.Rectangle.Height = oldSizeIn.Height + diff;
                         }
                         else
@@ -310,7 +323,7 @@ namespace KnowledgeBase
                     }
                 case EditSizeStateEnum.Bottom:
                     {
-                        float diff = Math.Abs(secondMousePointIn.Y) - Math.Abs(firstMousePointIn.Y);
+                        float diff = Math.Abs(translateScaleMousePointSecond.Y) - Math.Abs(translateScaleMousePointFirst.Y);
                         if (oldSizeIn.Height + diff > TableGraph.GraphSize.Height)
                             SelectedTableGraph.Rectangle.Height = oldSizeIn.Height + diff;
                         else
@@ -320,10 +333,10 @@ namespace KnowledgeBase
                     }
                 case EditSizeStateEnum.Left:
                     {
-                        float diff = Math.Abs(firstMousePointIn.X) - Math.Abs(secondMousePointIn.X);
+                        float diff = Math.Abs(translateScaleMousePointFirst.X) - Math.Abs(translateScaleMousePointSecond.X);
                         if (oldSizeIn.Width + diff > TableGraph.GraphSize.Width)
                         {
-                            SelectedTableGraph.Rectangle.X = secondMousePointIn.X;
+                            SelectedTableGraph.Rectangle.X = translateScaleMousePointSecond.X;
                             SelectedTableGraph.Rectangle.Width = oldSizeIn.Width + diff;
                         }
                         else
@@ -333,7 +346,7 @@ namespace KnowledgeBase
                     }
                 case EditSizeStateEnum.Right:
                     {
-                        float diff = Math.Abs(secondMousePointIn.X) - Math.Abs(firstMousePointIn.X);
+                        float diff = Math.Abs(translateScaleMousePointSecond.X) - Math.Abs(translateScaleMousePointFirst.X);
                         if (oldSizeIn.Width + diff > TableGraph.GraphSize.Width)
                             SelectedTableGraph.Rectangle.Width = oldSizeIn.Width + diff;
                         else

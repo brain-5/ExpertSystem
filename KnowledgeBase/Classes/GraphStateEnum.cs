@@ -11,6 +11,7 @@ namespace KnowledgeBase
         None,
         Move,
         ContextMenu,
-        EditSize
+        EditSize,
+        SetReference
     }
 }

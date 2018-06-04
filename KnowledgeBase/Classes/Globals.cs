@@ -31,6 +31,7 @@ namespace KnowledgeBase
             public string NameObject = null;
             public string Annotation = null;
             public bool IsShowConsultation = false;
+            public bool IsReference = false;
 
             #region Graphics
 
@@ -73,7 +74,7 @@ namespace KnowledgeBase
             public TableGraph()
             {
                 ParentIds = new List<int>();
-                GraphConstructorColor = Color.CornflowerBlue; LineConstructorColor = Color.Black; TextConstructorColor = Color.White;
+                GraphConstructorColor = Color.CornflowerBlue; LineConstructorColor = Color.Black; TextConstructorColor = Color.Black;
                 GraphResultColor = Color.DarkSeaGreen; LineResultColor = Color.DarkSeaGreen; TextResultColor = Color.White;
                 CurrentGraphResultColor = Color.LightSeaGreen; GraphBorderColor = Color.Black;
             }
