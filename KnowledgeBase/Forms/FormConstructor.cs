@@ -432,6 +432,10 @@ namespace KnowledgeBase
                             }
                             contextSub.Show(Panel0, e.Location);
                         });
+                        c.MenuItems.Add("Изменить размер", (ob, ev) =>
+                        {
+                            _graph.GraphState = GraphStateEnum.EditSize;
+                        });
                         c.MenuItems.Add("Удалить граф", (ob, ev) =>
                         {
                             DeleteGraph(_graph.SelectedTableGraph);
