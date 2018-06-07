@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using KnowledgeBase.Classes;
 using KnowledgeBase.Globals;
 
 
@@ -48,7 +49,7 @@ namespace KnowledgeBase
                 if (!IsShowGraph(graph)) continue;
 
                 Brush textBrush = new SolidBrush(graph.TextConstructorColor);
-                Font graphFont = new Font(FontFamily.GenericSansSerif, 12f,FontStyle.Bold);
+                Font graphFont = new Font(FontFamily.GenericSansSerif, 12f, FontStyle.Bold);
                 StringFormat textFormat = new StringFormat
                 {
                     Alignment = StringAlignment.Center,
@@ -95,7 +96,7 @@ namespace KnowledgeBase
 
                 graphics.DrawString(graph.NameObject, graphFont, textBrush, graph.Rectangle, textFormat);
 
-                if(!graph.IsReference) DrawConnectionLine(graph, graphics);
+                if (!graph.IsReference) DrawConnectionLine(graph, graphics);
 
                 graphBrush.Dispose(); graphBrush = null;
                 textBrush.Dispose(); textBrush = null;
@@ -119,29 +120,56 @@ namespace KnowledgeBase
                     else
                         linePen = new Pen(tableGraphIn.LineConstructorColor);
 
+                    float radToDeg = (float)(180.0 / Math.PI);
+                    float degToRad = (float)(Math.PI / 180.0);
+
                     PointF firstLinePoint = new PointF(firstGraph.Rectangle.Left + firstGraph.Rectangle.Width / 2.0f,
                          firstGraph.Rectangle.Top + firstGraph.Rectangle.Height / 2.0f);
                     PointF secondLinePoint = new PointF(tableGraphIn.Rectangle.Left + tableGraphIn.Rectangle.Width / 2.0f,
                          tableGraphIn.Rectangle.Top + tableGraphIn.Rectangle.Height / 2.0f);
                     PointF vectorDirect = new PointF(secondLinePoint.X - firstLinePoint.X, secondLinePoint.Y - firstLinePoint.Y);
 
-                    float vecDirectLen = GetVecLength(vectorDirect);
 
-                    //Ищем точки пересечения окружностей и прямой, что бы прямая не перекрывала окружность
+                    /*//Ищем точки пересечения окружностей и прямой, что бы прямая не перекрывала окружность
+                    float vecDirectLen = GetVecLength(vectorDirect);
                     PointF firstCrossPoint = GetPointOnVector(firstLinePoint, secondLinePoint, firstGraph.Rectangle.Height / 2.0f);
-                    PointF secondCrossPoint = GetPointOnVector(firstLinePoint, secondLinePoint, vecDirectLen - tableGraphIn.Rectangle.Height / 2.0f);
+                    PointF secondCrossPoint = GetPointOnVector(firstLinePoint, secondLinePoint, vecDirectLen - tableGraphIn.Rectangle.Height / 2.0f);*/
+
+                    PointF firstCrossPoint = new PointF();
+                    PointF secondCrossPoint = new PointF();
+
+                    float angleVecDirec = (float)Math.Atan2(vectorDirect.Y, vectorDirect.X) * radToDeg;
+
+                    SideEnum firstGraphSide = GetSideByDegrees(angleVecDirec);
+                    if (firstGraphSide == SideEnum.Top)
+                    {
+                        firstCrossPoint.X = firstGraph.Rectangle.Left + firstGraph.Rectangle.Width / 2.0f; firstCrossPoint.Y = firstGraph.Rectangle.Top;
+                        secondCrossPoint.X = tableGraphIn.Rectangle.Left + tableGraphIn.Rectangle.Width / 2.0f; secondCrossPoint.Y = tableGraphIn.Rectangle.Bottom;
+                    }
+                    else if (firstGraphSide == SideEnum.Left)
+                    {
+                        firstCrossPoint.X = firstGraph.Rectangle.Left; firstCrossPoint.Y = firstGraph.Rectangle.Top + firstGraph.Rectangle.Height / 2.0f;
+                        secondCrossPoint.X = tableGraphIn.Rectangle.Right; secondCrossPoint.Y = tableGraphIn.Rectangle.Top + tableGraphIn.Rectangle.Height / 2.0f;
+                    }
+                    else if (firstGraphSide == SideEnum.Bottom)
+                    {
+                        firstCrossPoint.X = firstGraph.Rectangle.Left + firstGraph.Rectangle.Width / 2.0f; firstCrossPoint.Y = firstGraph.Rectangle.Bottom;
+                        secondCrossPoint.X = tableGraphIn.Rectangle.Left + tableGraphIn.Rectangle.Width / 2.0f; secondCrossPoint.Y = tableGraphIn.Rectangle.Top;
+                    }
+                    else if (firstGraphSide == SideEnum.Right)
+                    {
+                        firstCrossPoint.X = firstGraph.Rectangle.Right; firstCrossPoint.Y = firstGraph.Rectangle.Top + firstGraph.Rectangle.Height / 2.0f;
+                        secondCrossPoint.X = tableGraphIn.Rectangle.Left; secondCrossPoint.Y = tableGraphIn.Rectangle.Top + tableGraphIn.Rectangle.Height / 2.0f;
+                    }
 
                     //Чертим стрелочки направления прямой
                     //Угол боковой стрелочки к прямой будет 45 градусов
                     //Точку стрелочки боковой берем из формул полярных систем координат
                     //x=r*cosY, y=r*sinY 
                     //Угол между прямой и началом координат через полярные систмы координат
-                    //angle=arctan(y/x)
-
-                    float radToDeg = (float)(180.0 / Math.PI);
-                    float degToRad = (float)(Math.PI / 180.0);
-
-                    float angleVecDirectRad = (float)Math.Atan2(vectorDirect.Y, vectorDirect.X) * radToDeg;
+                    //angle=arctan(y/x)                    
+                    PointF vectorDirectNew = new PointF(secondCrossPoint.X - firstCrossPoint.X, secondCrossPoint.Y - firstCrossPoint.Y);
+                    float angleVecDirectRad = (float)Math.Atan2(vectorDirectNew.Y, vectorDirectNew.X) * radToDeg;
 
                     float arrowLen = Settings.LengthArrow;
                     float anglefirstArrowRad = (135.0f + angleVecDirectRad) * degToRad;
@@ -167,6 +195,38 @@ namespace KnowledgeBase
         private float GetVecLength(PointF pointFIn)
         {
             return (float)Math.Sqrt(pointFIn.X * pointFIn.X + pointFIn.Y * pointFIn.Y);
+        }
+
+        /// <summary>
+        /// Получаем сторону, в которую пойдет направление стрелочки. Вверх и низ инвертируем, так как у нас координата по Y перевернута.
+        /// </summary>
+        /// <param name="degreesIn"></param>
+        /// <returns></returns>
+        private SideEnum GetSideByDegrees(float degreesIn)
+        {
+            float degrees = degreesIn > 0 ? degreesIn : 360.0f + degreesIn;
+            SideEnum en = SideEnum.Top;
+            if (degrees >= 45.0f && degrees < 135.0f)
+            {
+                //Снизу
+                en = SideEnum.Bottom;
+            }
+            else if (degrees >= 135.0f && degrees < 225.0f)
+            {
+                //Слева
+                en = SideEnum.Left;
+            }
+            else if (degrees >= 225.0f && degrees < 315.0f)
+            {                
+                //Вверх
+                en = SideEnum.Top;
+            }
+            else if (degrees >= 315.0f && degrees <= 360.0f || degrees >= 0 && degrees < 45.0f)
+            {
+                //Справа
+                en = SideEnum.Right;
+            }
+            return en;
         }
 
         private PointF GetPointOnVector(PointF startPointFIn, PointF endPointFIn, float lenPointFromStartPointIn)

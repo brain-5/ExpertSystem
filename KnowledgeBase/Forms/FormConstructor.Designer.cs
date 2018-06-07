@@ -53,6 +53,7 @@
             this.ButtonScalePlus = new System.Windows.Forms.Button();
             this.TableLayoutPanelMain = new System.Windows.Forms.TableLayoutPanel();
             this.Panel2 = new System.Windows.Forms.Panel();
+            this.ButtonReference = new System.Windows.Forms.Button();
             this.ButtonAddGrapthP2 = new System.Windows.Forms.Button();
             this.MainMenu = new System.Windows.Forms.MenuStrip();
             this.File = new System.Windows.Forms.ToolStripMenuItem();
@@ -61,7 +62,6 @@
             this.Layers = new System.Windows.Forms.ToolStripMenuItem();
             this.Objects = new System.Windows.Forms.ToolStripMenuItem();
             this.Properties = new System.Windows.Forms.ToolStripMenuItem();
-            this.ButtonReference = new System.Windows.Forms.Button();
             this.TableLayoutPanelBottom.SuspendLayout();
             this.Panel3.SuspendLayout();
             this.Panel1.SuspendLayout();
@@ -368,6 +368,16 @@
             this.Panel2.Size = new System.Drawing.Size(889, 24);
             this.Panel2.TabIndex = 1;
             // 
+            // ButtonReference
+            // 
+            this.ButtonReference.Location = new System.Drawing.Point(102, 0);
+            this.ButtonReference.Name = "ButtonReference";
+            this.ButtonReference.Size = new System.Drawing.Size(72, 23);
+            this.ButtonReference.TabIndex = 3;
+            this.ButtonReference.Text = "Ссылка";
+            this.ButtonReference.UseVisualStyleBackColor = true;
+            this.ButtonReference.Click += new System.EventHandler(this.ButtonReference_Click);
+            // 
             // ButtonAddGrapthP2
             // 
             this.ButtonAddGrapthP2.Location = new System.Drawing.Point(3, 0);
@@ -443,16 +453,6 @@
             this.Properties.Size = new System.Drawing.Size(125, 22);
             this.Properties.Text = "Свойства";
             this.Properties.CheckedChanged += new System.EventHandler(this.Properties_CheckedChanged);
-            // 
-            // ButtonReference
-            // 
-            this.ButtonReference.Location = new System.Drawing.Point(102, 0);
-            this.ButtonReference.Name = "ButtonReference";
-            this.ButtonReference.Size = new System.Drawing.Size(72, 23);
-            this.ButtonReference.TabIndex = 3;
-            this.ButtonReference.Text = "Ссылка";
-            this.ButtonReference.UseVisualStyleBackColor = true;
-            this.ButtonReference.Click += new System.EventHandler(this.ButtonReference_Click);
             // 
             // FormConstructor
             // 
